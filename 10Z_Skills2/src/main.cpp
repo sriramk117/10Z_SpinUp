@@ -2,6 +2,90 @@
 // Robot Configuration:
 // [Name]               [Type]        [Port(s)]
 // frontRight           motor         16              
+// frontLeft            motor         15              
+// backRight            motor         19              
+// backLeft             motor         12              
+// Gyro                 inertial      11              
+// dr4b                 motor         3               
+// Controller1          controller                    
+// LE                   encoder       C, D            
+// convey               motor         7               
+// fourBar2             motor         1               
+// twoBar               motor         10              
+// tilter               motor         4               
+// DistanceBack         distance      2               
+// RotationTilter       rotation      20              
+// DistanceFront        distance      21              
+// vision_sensor        vision        17              
+// middleLeft           motor         5               
+// middleRight          motor         6               
+// flywheel             motor         18              
+// DigitalOutH          digital_out   H               
+// Optical              optical       9               
+// Distance             distance      8               
+// LineTrackerG         line          G               
+// indexer              digital_out   B               
+// ---- END VEXCODE CONFIGURED DEVICES ----
+// ---- START VEXCODE CONFIGURED DEVICES ----
+// Robot Configuration:
+// [Name]               [Type]        [Port(s)]
+// frontRight           motor         16              
+// frontLeft            motor         15              
+// backRight            motor         19              
+// backLeft             motor         12              
+// Gyro                 inertial      11              
+// dr4b                 motor         3               
+// Controller1          controller                    
+// LE                   encoder       C, D            
+// convey               motor         7               
+// fourBar2             motor         1               
+// twoBar               motor         10              
+// tilter               motor         4               
+// DistanceBack         distance      2               
+// RotationTilter       rotation      20              
+// DistanceFront        distance      21              
+// vision_sensor        vision        17              
+// middleLeft           motor         5               
+// middleRight          motor         6               
+// flywheel             motor         18              
+// DigitalOutH          digital_out   H               
+// Optical              optical       9               
+// Distance             distance      8               
+// LineTrackerG         line          G               
+// indexer              digital_out   B               
+// ---- END VEXCODE CONFIGURED DEVICES ----
+// ---- START VEXCODE CONFIGURED DEVICES ----
+// Robot Configuration:
+// [Name]               [Type]        [Port(s)]
+// frontRight           motor         16              
+// frontLeft            motor         15              
+// backRight            motor         19              
+// backLeft             motor         12              
+// Gyro                 inertial      11              
+// dr4b                 motor         3               
+// Controller1          controller                    
+// LE                   encoder       C, D            
+// convey               motor         7               
+// fourBar2             motor         1               
+// twoBar               motor         10              
+// tilter               motor         4               
+// DistanceBack         distance      2               
+// RotationTilter       rotation      20              
+// DistanceFront        distance      21              
+// vision_sensor        vision        17              
+// middleLeft           motor         5               
+// middleRight          motor         6               
+// flywheel             motor         18              
+// DigitalOutH          digital_out   H               
+// Optical              optical       9               
+// Distance             distance      8               
+// LineTrackerG         line          G               
+// indexer              digital_out   B               
+// ---- END VEXCODE CONFIGURED DEVICES ----
+// ---- START VEXCODE CONFIGURED DEVICES ----
+// Robot Configuration:
+// [Name]               [Type]        [Port(s)]
+// frontRight           motor         16              
 // frontLeft            motor         13              
 // backRight            motor         19              
 // backLeft             motor         12              
@@ -67,12 +151,13 @@ void pre_auton(void) {
   while(Gyro.isCalibrating()) {
     wait(1, msec);
   }
-  /*
+  
   Optical.brightness(75);
   Optical.setLight(ledState::on);
-  wait(2, sec);*/
-  //wait(2, sec);
-  Brain.Screen.print("Gyro calibrated");
+  wait(2, sec);
+
+
+  Brain.Screen.print("Gyro + Optical calibrated");
   Brain.Screen.newLine();
   
   // All activities that occur before the competition starts
@@ -169,9 +254,14 @@ void moveForwardConveyer(double d, double c, double t, double cap) {
   convey.startRotateFor(fwd, c, deg);
   odom::moveForwardPID(d, cap);
   convey.stop();
-
 }
 
+void moveToConveyer(double c, double target_x, double target_y, double dir, double tolD, double tolA, double capD, double capA, double settleTime) {
+  convey.setVelocity(100, percent);
+  convey.startRotateFor(fwd, c, deg);
+  odom::moveTo(target_x, target_y, dir, tolD, tolA, capD, capA, settleTime);
+  convey.stop();
+}
 
 void align(int c) {
   /*KEY:
@@ -227,7 +317,6 @@ void moveSpinner(double deg) {
 // CHANGED SHOOTER CODE
 void moveShooter(double deg) {
   //convey.setVelocity(100, percent);
-  
   convey.setPosition(0, degrees);
   double error = deg - convey.position(degrees); 
   while (error > 2) {
@@ -235,13 +324,13 @@ void moveShooter(double deg) {
     convey.spin(vex::reverse, error, rpm);
   }
   //convey.rotateFor(vex::reverse, deg, degrees);
-
 }
 
 void startShooter(double deg) {
   flywheel.spin(vex::reverse, deg, vex::percent);
 }
 
+/*
 void rotateSpinnerOptical(double col, double t) {
   // if col = 1 --> color is blue
   // if col = 0 --> color is red
@@ -285,7 +374,45 @@ void rotateSpinnerOptical(double col, double t) {
   middleRight.setStopping(coast);
   backLeft.setStopping(coast);
   backRight.setStopping(coast);
+}*/
+
+
+int getColor(){
+  Optical.setLightPower(100,pct);
+  if (Optical.isNearObject()) {
+    int objHue = Optical.hue();
+    if (objHue < 300 && objHue > 180) {return 1;}
+    else if (objHue < 20) {return 0;} 
+    else {return 2;}
+  }  
+  else {return 2;}
 }
+
+void rollerSpin(bool color, double speed, double timeout, double extraspin){
+  if (color == 0) {
+    double starttime = Brain.timer(sec);
+    while(!getColor() == color && Brain.timer(sec)-starttime < timeout){
+      convey.spin(fwd, speed, pct);
+    }
+    while(getColor() == color && Brain.timer(sec)-starttime < timeout){
+      convey.spin(fwd, speed/2, pct);
+    }
+    convey.stop(hold);
+    convey.rotateFor(fwd, extraspin, deg, speed, velocityUnits::pct, false);
+  }
+  if (color == 1) {
+    double starttime = Brain.timer(sec);
+    while(getColor() == 0 && Brain.timer(sec)-starttime < timeout){
+      convey.spin(fwd, speed, pct);
+    }
+    while( ((!getColor()) == 0) && Brain.timer(sec)-starttime < timeout){
+      convey.spin(fwd, speed/2, pct);
+    }
+    convey.stop(hold);
+    convey.rotateFor(fwd, extraspin, deg, speed, velocityUnits::pct, false);
+  }
+}
+
 
 void brakeHold() {
   frontLeft.setStopping(hold);
@@ -309,6 +436,8 @@ void expand() {
   DigitalOutH.set(true);
 }
 
+
+
 void autonomous(void) {
 
   // ..........................................................................
@@ -326,12 +455,22 @@ void autonomous(void) {
   backRight.setPosition(0, degrees);
   
 
-  //odom::moveTo(double target_x, double target_y, double target_a, double agg, double tolD, double tolA, double capD, double capA, double settleTime);
+  // RED = 0
+  // BLUE = 1
+
+  // AUTON TEMPLATE
+
+  //odom::moveTo(double target_x, double target_y, double dir, double tolD, double tolA, double capD, double capA, double settleTime);
   //odom::turnToPoint(double target_x, double target_y, double cap, double settleTime);
-  //cout << atan2(45, -45) * 180/3.14159265; 
-  //odom::turnTo(45, 100000000);
-  odom::turnToPoint(0, 24, 400, 10);
-  //odom::moveTo(0, 24, 1, 2, 2, 400, 400, 10);
+  //rollerSpin(bool color, double speed, double timeout, double extraspin)
+
+
+  // SKILLS PROG
+
+  //rollerSpin(0, 80, 10, 0);
+  odom::moveTo(24, 24, 1, 5, 5, 1000000, 1000000, 10);
+  //odom::turnToPoint(0, -24, 1000000, 10);
+
   /*
   // .............................................
   // FIRST HALF
@@ -570,130 +709,6 @@ void autonomous(void) {
 
   
 
-/*
-void fourBarFunction(){
-  if (Controller1.ButtonR1.pressing()) {
-    dr4b.spin(vex::forward, 100, vex::percent);
-  } else if (Controller1.ButtonR2.pressing()){
-    dr4b.spin(vex::reverse, 100, vex::percent);
-  } else {
-    dr4b.setStopping(brakeType::hold);
-    dr4b.stop();
-  }
-}
-
-void conveyorFunction() {
-  if (Controller1.ButtonRight.pressing()) {
-    conveyor.spin(vex::forward, 50, vex::percent); //75
-  } else if (Controller1.ButtonLeft.pressing()) {
-    conveyor.spin(vex::reverse, 50, vex::percent);
-  } else {
-    conveyor.setStopping(coast);
-    conveyor.stop();
-  }
-}
-
-void latchFunction() {
-  if (Controller1.ButtonL1.pressing()) twoBar.spin(vex::forward, 100, vex::percent);
-  else if (Controller1.ButtonL2.pressing()) twoBar.spin(vex::reverse, 100, vex::percent);
-  else {
-   twoBar.setStopping(hold);
-   twoBar.stop(); 
-  }
-
-
-}
-
-void latchActivation() {
-  latch.spinFor(fwd, 100, degrees);
-}
-
-void latchRelease() {
-  latch.spinFor(fwd, -100, degrees);
-}
-
-
-void clamp(){
-  if (Controller1.ButtonX.pressing()) latch.spin(vex::reverse, 100, vex::percent);
-  else if (Controller1.ButtonB.pressing()) latch.spin(vex::forward, 100, vex::percent);
-  else {
-    latch.setStopping(hold);
-    latch.stop();
-  }
-}
-
-////ONE STICK CONTROL
-void oneStick()
-{
-  // Assigns  joystick axis values to variables 
-  int axis3val = Controller1.Axis3.value();
-  int axis4val = Controller1.Axis4.value();
-  int  LV = 0;
-  int  RV = 0;
-  // Turning movement velocity declaration 
-  int turnvel = 0;
-  // Forward/backwards movement velocity declaration 
-  int latvel = 0;
-  // Threshold to provide for driver joystick error (sensitivity)
-  int threshold = 10;
-
-  //States that if the value of the joystick is greater than the threshold, 
-  //set the velocity equal to the latvel variable
-  if(abs(axis4val) > threshold)
-
-    latvel = axis4val;
-  // If the joystick val is less than 10, then don't take the value 
-  else
-
-    latvel = 0;
-  // Same logic as above 
-  if(abs(axis3val) > threshold)
-
-    turnvel = axis3val;
-
-  else
-
-    turnvel = 0;
-  // Allows for movement using axis vals 
-
-  // If right side movement is needed, LV is greater and vice versa
-
-  // If straight movement is needed the turnvel will be 0 so both velocities are the 
-  // same 
-  LV = turnvel + latvel;
-  RV = turnvel - latvel;
-  // Ignore the next 2 lines. Used for testing of Odometry 
-  //O.update();
-
-  //printf("%f,%f\n",O.posX,O.posY);
-  //printf("%f,%f\n",LE.position(turns),RE.position(turns));
-
-  // Gives move command to motors based on velocities from the axis vals on joystick
-
-  backLeft.spin(vex::forward,LV,percent);
-  backRight.spin(vex::forward,RV,percent);
-  frontLeft.spin(vex::forward,LV,percent);
-  frontRight.spin(vex::forward,RV,percent);
-
-  
-}
-
-void holdRobot() {
-  double l = Controller1.Axis3.position(vex::percent);  //Axis 3 controls forward + backward
-    //int lateral = Controller1.Axis4.position(vex::percent);       //Axis 4 controls strafe left + strafe right
-  double r = Controller1.Axis1.position(vex::percent);    //Axis 1 controls turning
-
-  frontRight.setStopping(hold);
-  frontLeft.setStopping(hold);
-  backRight.setStopping(hold);
-  backLeft.setStopping(hold);
-  frontRight.spin(vex::forward, l - r, vex::percent); 
-  frontLeft.spin(vex::forward, l + r, vex::percent);
-  backRight.spin(vex::forward, l - r, vex::percent);
-  backLeft.spin(vex::forward, l + r, vex::percent);
-  
-}
-*/
 
 /*
 int Xpressed = 0;

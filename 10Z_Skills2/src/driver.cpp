@@ -10,6 +10,7 @@ double driver::twoBarPos = 0;
 
 bool shoot = false;
 bool droll = false;
+bool active = false;
 
 int Xpressed = 0;
 
@@ -63,25 +64,34 @@ void driver::robotDrive(){
     } 
 
     if (rotational < 0) {
-      k2 = -10;
+      k2 = -9;
     } else if (rotational >= 0) {
-      k2 = 10;
+      k2 = 9;
     } 
 
     
 
     // Drive Code
-    frontRight.spin(vex::forward, k1*fabs(longitudinal)*fabs(longitudinal) - k2*fabs(rotational)*fabs(rotational), vex::percent); 
-    frontLeft.spin(vex::forward, k1*fabs(longitudinal)*fabs(longitudinal) + k2* fabs(rotational)*fabs(rotational), vex::percent);
-    middleRight.spin(vex::forward, k1*fabs(longitudinal)*fabs(longitudinal) - k2*fabs(rotational)*fabs(rotational), vex::percent);
-    middleLeft.spin(vex::forward, k1*fabs(longitudinal)*fabs(longitudinal) + k2*fabs(rotational)*fabs(rotational), vex::percent);
-    backRight.spin(vex::forward, k1*fabs(longitudinal)*fabs(longitudinal) - k2*fabs(rotational)*fabs(rotational), vex::percent);
-    backLeft.spin(vex::forward, k1*fabs(longitudinal)*fabs(longitudinal) + k2*fabs(rotational)*fabs(rotational), vex::percent);
+    frontRight.spin(vex::forward, k1*sqrt(fabs(longitudinal)) - k2*sqrt(fabs(rotational)), vex::percent); 
+    frontLeft.spin(vex::forward, k1*sqrt(fabs(longitudinal)) + k2*sqrt(fabs(rotational)), vex::percent);
+    middleRight.spin(vex::forward, k1*sqrt(fabs(longitudinal)) - k2*sqrt(fabs(rotational)), vex::percent);
+    middleLeft.spin(vex::forward, k1*sqrt(fabs(longitudinal)) + k2*sqrt(fabs(rotational)), vex::percent);
+    backRight.spin(vex::forward, k1*sqrt(fabs(longitudinal)) - k2*sqrt(fabs(rotational)), vex::percent);
+    backLeft.spin(vex::forward, k1*sqrt(fabs(longitudinal)) + k2*sqrt(fabs(rotational)), vex::percent);
     
+    /*
+    frontRight.spin(vex::forward, longitudinal - rotational, vex::percent); 
+    frontLeft.spin(vex::forward, longitudinal + rotational, vex::percent);
+    middleRight.spin(vex::forward, longitudinal - rotational, vex::percent);
+    middleLeft.spin(vex::forward, longitudinal + rotational, vex::percent);
+    backRight.spin(vex::forward, longitudinal - rotational, vex::percent);
+    backLeft.spin(vex::forward, longitudinal + rotational, vex::percent);*/
+
     // Driver Functions
     shooter();
     intake();
     expand();
+    angleChanger();
     
     
 
@@ -131,15 +141,31 @@ void driver::robotDrive(){
   
 }
 
+void driver::angleChanger() {
+  if (active) {
+    if (Controller1.ButtonY.pressing() || Controller1.ButtonRight.pressing()){
+      indexer.set(false);
+      waitUntil(!(Controller1.ButtonY.pressing() || Controller1.ButtonRight.pressing()));
+      active = false;
+   }
+  } else {
+    if (Controller1.ButtonY.pressing()){
+      indexer.set(true);
+      waitUntil(!Controller1.ButtonY.pressing());
+      active = true;
+    } else if (Controller1.ButtonRight.pressing()) {
+      indexer.set(false);
+      waitUntil(!Controller1.ButtonRight.pressing());
+      active = true;
+    } 
+  }
+}
 
 void driver::shooter() {
-  
   if (Controller1.ButtonR1.pressing()) {
-    //indexer.set(false);
-    flywheel.spin(vex::fwd, 12, voltageUnits::volt);
+    flywheel.spin(vex::fwd, 100, percent);
   } else {
-    //indexer.set(true);
-    flywheel.spin(vex::fwd, 12, voltageUnits::volt);
+    flywheel.spin(vex::fwd, 100, percent);
   }
   
 }

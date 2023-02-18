@@ -31,6 +31,8 @@ class driver{
 
  static void expand();
 
+ static void angleChanger();
+
 
   private:
   // Sub-System Functions

@@ -9,14 +9,14 @@ brain  Brain;
 
 // VEXcode device constructors
 motor frontRight = motor(PORT16, ratio6_1, false);
-motor frontLeft = motor(PORT13, ratio6_1, true);
+motor frontLeft = motor(PORT15, ratio6_1, true);
 motor backRight = motor(PORT19, ratio6_1, false);
 motor backLeft = motor(PORT12, ratio6_1, true);
 inertial Gyro = inertial(PORT11);
 motor dr4b = motor(PORT3, ratio18_1, true);
 controller Controller1 = controller(primary);
 encoder LE = encoder(Brain.ThreeWirePort.C);
-motor convey = motor(PORT7, ratio6_1, true);
+motor convey = motor(PORT7, ratio6_1, false);
 motor fourBar2 = motor(PORT1, ratio18_1, true);
 motor twoBar = motor(PORT10, ratio18_1, true);
 motor tilter = motor(PORT4, ratio18_1, true);
