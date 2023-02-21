@@ -33,6 +33,8 @@ class driver{
 
  static void angleChanger();
 
+ static void compress();
+
 
   private:
   // Sub-System Functions

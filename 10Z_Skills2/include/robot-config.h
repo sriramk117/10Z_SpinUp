@@ -36,6 +36,7 @@ extern optical Optical;
 extern distance Distance;
 extern line LineTrackerG;
 extern digital_out indexer;
+extern digital_out compression;
 
 /**
  * Used to initialize code/tasks/devices added using tools in VEXcode Pro.

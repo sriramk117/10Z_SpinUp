@@ -37,6 +37,7 @@ optical Optical = optical(PORT9);
 distance Distance = distance(PORT8);
 line LineTrackerG = line(Brain.ThreeWirePort.G);
 digital_out indexer = digital_out(Brain.ThreeWirePort.B);
+digital_out compression = digital_out(Brain.ThreeWirePort.A);
 
 // VEXcode generated functions
 // define variable for remote controller enable/disable

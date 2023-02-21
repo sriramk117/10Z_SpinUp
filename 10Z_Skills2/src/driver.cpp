@@ -50,7 +50,7 @@ void driver::robotDrive(){
 
     //Controller Position Values
     double longitudinal = Controller1.Axis3.position(vex::percent);  //Axis 3 controls forward + backward
-    //int lateral = Controller1.Axis4.position(vex::percent);       //Axis 4 controls strafe left + strafe right
+    //double lateral = Controller1.Axis4.position(vex::percent);       //Axis 4 controls strafe left + strafe right
     double rotational = Controller1.Axis1.position(vex::percent);    //Axis 1 controls turning
 
     //Acceleration Curve
@@ -78,14 +78,6 @@ void driver::robotDrive(){
     middleLeft.spin(vex::forward, k1*sqrt(fabs(longitudinal)) + k2*sqrt(fabs(rotational)), vex::percent);
     backRight.spin(vex::forward, k1*sqrt(fabs(longitudinal)) - k2*sqrt(fabs(rotational)), vex::percent);
     backLeft.spin(vex::forward, k1*sqrt(fabs(longitudinal)) + k2*sqrt(fabs(rotational)), vex::percent);
-    
-    /*
-    frontRight.spin(vex::forward, longitudinal - rotational, vex::percent); 
-    frontLeft.spin(vex::forward, longitudinal + rotational, vex::percent);
-    middleRight.spin(vex::forward, longitudinal - rotational, vex::percent);
-    middleLeft.spin(vex::forward, longitudinal + rotational, vex::percent);
-    backRight.spin(vex::forward, longitudinal - rotational, vex::percent);
-    backLeft.spin(vex::forward, longitudinal + rotational, vex::percent);*/
 
     // Driver Functions
     shooter();
@@ -175,19 +167,27 @@ void driver::intake() {
     droll = true;
     convey.spin(vex::forward, 100, vex::percent);
   } else if (Controller1.ButtonR2.pressing()){
+    convey.setPosition(0, degrees);
+    compression.set(true);
     droll = true;
-    convey.spin(vex::reverse, 100, vex::percent);
+    //convey.spin(vex::reverse, 100, vex::percent);
+    /*
+    double error = (100 - convey.position(degrees)) * 1; 
+    while (error > 2 && Controller1.ButtonR2.pressing()) {
+      error = (100 - convey.position(degrees)) * 1;
+      convey.spin(vex::reverse, error, percent);
+    }*/
+    convey.spin(vex::reverse, 65, percent);
   } else {
+    compression.set(false);
     droll = false;
     convey.stop();
   }
 }
 
 void driver::expand() {
-   if (Controller1.ButtonY.pressing()) {
-    //DigitalOutG.set(true);
+  if (Controller1.ButtonY.pressing()) {
     DigitalOutH.set(true);
-    //DigitalOutA.set(true);
   }
 }
 
@@ -203,44 +203,28 @@ void driver::conveyorSpin(int conveyorSwitch){
 }
 
 void driver::fourBar(){
-
- if (Controller1.ButtonR1.pressing()) {
-   //dr4b.setBrake(brakeType::undefined);
-  dr4b.spin(vex::forward, 100, vex::percent);
-  fourBar2.spin(vex::forward, 100, vex::percent);
- 
- 
- 
- }
-else if (Controller1.ButtonR2.pressing()){
-
-//dr4b.setBrake(brakeType::undefined);
-dr4b.spin(vex::reverse, 100, vex::percent);
-fourBar2.spin(vex::reverse, 100, vex::percent);
-
-
-
-
-}
-else {
-  dr4b.setStopping(brakeType::hold);
-  dr4b.stop();
-  fourBar2.stop();
-
-
-
+  if (Controller1.ButtonR1.pressing()) {
+    //dr4b.setBrake(brakeType::undefined);
+    dr4b.spin(vex::forward, 100, vex::percent);
+    fourBar2.spin(vex::forward, 100, vex::percent);
+  } else if (Controller1.ButtonR2.pressing()){
+    //dr4b.setBrake(brakeType::undefined);
+    dr4b.spin(vex::reverse, 100, vex::percent);
+    fourBar2.spin(vex::reverse, 100, vex::percent);
+  } else {
+    dr4b.setStopping(brakeType::hold);
+    dr4b.stop();
+    fourBar2.stop();
+  }
 }
 
-
-
-}
 void driver::twoBarMove(){
- if (Controller1.ButtonL1.pressing()) tilter.spin(vex::forward, 100, vex::percent);
- else if (Controller1.ButtonL2.pressing()) tilter.spin(vex::reverse, 100, vex::percent);
- else {
-   tilter.setStopping(hold);
-   tilter.stop();
- }
+  if (Controller1.ButtonL1.pressing()) tilter.spin(vex::forward, 100, vex::percent);
+  else if (Controller1.ButtonL2.pressing()) tilter.spin(vex::reverse, 100, vex::percent);
+  else {
+    tilter.setStopping(hold);
+    tilter.stop();
+  }
 }
 
 

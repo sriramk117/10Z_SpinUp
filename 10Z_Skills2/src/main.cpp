@@ -25,92 +25,8 @@
 // Distance             distance      8               
 // LineTrackerG         line          G               
 // indexer              digital_out   B               
+// compression          digital_out   A               
 // ---- END VEXCODE CONFIGURED DEVICES ----
-// ---- START VEXCODE CONFIGURED DEVICES ----
-// Robot Configuration:
-// [Name]               [Type]        [Port(s)]
-// frontRight           motor         16              
-// frontLeft            motor         15              
-// backRight            motor         19              
-// backLeft             motor         12              
-// Gyro                 inertial      11              
-// dr4b                 motor         3               
-// Controller1          controller                    
-// LE                   encoder       C, D            
-// convey               motor         7               
-// fourBar2             motor         1               
-// twoBar               motor         10              
-// tilter               motor         4               
-// DistanceBack         distance      2               
-// RotationTilter       rotation      20              
-// DistanceFront        distance      21              
-// vision_sensor        vision        17              
-// middleLeft           motor         5               
-// middleRight          motor         6               
-// flywheel             motor         18              
-// DigitalOutH          digital_out   H               
-// Optical              optical       9               
-// Distance             distance      8               
-// LineTrackerG         line          G               
-// indexer              digital_out   B               
-// ---- END VEXCODE CONFIGURED DEVICES ----
-// ---- START VEXCODE CONFIGURED DEVICES ----
-// Robot Configuration:
-// [Name]               [Type]        [Port(s)]
-// frontRight           motor         16              
-// frontLeft            motor         15              
-// backRight            motor         19              
-// backLeft             motor         12              
-// Gyro                 inertial      11              
-// dr4b                 motor         3               
-// Controller1          controller                    
-// LE                   encoder       C, D            
-// convey               motor         7               
-// fourBar2             motor         1               
-// twoBar               motor         10              
-// tilter               motor         4               
-// DistanceBack         distance      2               
-// RotationTilter       rotation      20              
-// DistanceFront        distance      21              
-// vision_sensor        vision        17              
-// middleLeft           motor         5               
-// middleRight          motor         6               
-// flywheel             motor         18              
-// DigitalOutH          digital_out   H               
-// Optical              optical       9               
-// Distance             distance      8               
-// LineTrackerG         line          G               
-// indexer              digital_out   B               
-// ---- END VEXCODE CONFIGURED DEVICES ----
-// ---- START VEXCODE CONFIGURED DEVICES ----
-// Robot Configuration:
-// [Name]               [Type]        [Port(s)]
-// frontRight           motor         16              
-// frontLeft            motor         13              
-// backRight            motor         19              
-// backLeft             motor         12              
-// Gyro                 inertial      11              
-// dr4b                 motor         3               
-// Controller1          controller                    
-// LE                   encoder       C, D            
-// convey               motor         7               
-// fourBar2             motor         1               
-// twoBar               motor         10              
-// tilter               motor         4               
-// DistanceBack         distance      2               
-// RotationTilter       rotation      20              
-// DistanceFront        distance      21              
-// vision_sensor        vision        17              
-// middleLeft           motor         5               
-// middleRight          motor         6               
-// flywheel             motor         18              
-// DigitalOutH          digital_out   H               
-// Optical              optical       9               
-// Distance             distance      8               
-// LineTrackerG         line          G               
-// indexer              digital_out   B               
-// ---- END VEXCODE CONFIGURED DEVICES ----
-
 #include "vex.h"
 #include "odom.h"
 #include "driver.h"
@@ -256,10 +172,10 @@ void moveForwardConveyer(double d, double c, double t, double cap) {
   convey.stop();
 }
 
-void moveToConveyer(double c, double target_x, double target_y, double dir, double tolD, double tolA, double capD, double capA, double settleTime) {
+void moveToConveyer(double c, double target_x, double target_y, double dir, double turnScale, double tolD, double tolA, double capD, double capA, double settleTime) {
   convey.setVelocity(100, percent);
   convey.startRotateFor(fwd, c, deg);
-  odom::moveTo(target_x, target_y, dir, tolD, tolA, capD, capA, settleTime);
+  odom::moveTo(target_x, target_y, dir, turnScale, tolD, tolA, capD, capA, settleTime);
   convey.stop();
 }
 
@@ -466,9 +382,39 @@ void autonomous(void) {
 
 
   // SKILLS PROG
+  
+  //
+  odom::moveTo(0, -2.5, -1, 1, 1, 5, 600, 1000000, 10);
+  rollerSpin(0, 50, 10, 0);
+  wait(5, msec);
+  moveToConveyer(100000, 63, 50, 1, 1.2, 3, 5, 300, 1000000, 10);
+  convey.setVelocity(100, percent);
+  convey.rotateFor(fwd, 3000, deg);
+  wait(100, msec);
+  odom::turnToPoint(-10, 110, 600, 10);
+  wait(100, msec);
+  // SHOOT
+  
 
-  //rollerSpin(0, 80, 10, 0);
-  odom::moveTo(24, 24, 1, 5, 5, 1000000, 1000000, 10);
+  odom::turnToPoint(87, 67, 600, 10);
+  wait(100, msec);
+  moveToConveyer(100000, 87, 67, 0.8, 1, 3, 5, 450, 1000000, 10);
+  wait(5, msec);
+  odom::turnToPoint(-10, 110, 600, 2);
+  wait(100, msec);
+  // SHOOT
+
+  odom::turnToPoint(97, 84, 600, 2);
+  wait(5, msec);
+  odom::moveTo(97, 84, 1, 1, 2, 10, 600, 1000000, 10);
+  wait(5, msec);
+  odom::turnTo(1, 500);
+  wait(5, msec);
+  odom::moveTo(102, 84, -1, 1, 2, 10, 600, 1000000, 10);
+  rollerSpin(0, 50, 10, 0);
+
+  
+
   //odom::turnToPoint(0, -24, 1000000, 10);
 
   /*
