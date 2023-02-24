@@ -521,12 +521,12 @@ void odom::moveForwardPID(double d, double cap) {
   double x_error = x - odom::x;
   double y_error = y - odom::y;
   double dist = sqrt(x_error*x_error + y_error*y_error);
-  double axial = PIDActivator->axial(dist, cap);
+  double axial = PIDActivator->axial(((dist/(3.25*3.1415926535)) * 360.0), cap);
   
 
   while(abs(dist) > 2) {
 
-    axial = PIDActivator->axial(dist, cap);
+    axial = PIDActivator->axial(((dist/(3.25*3.1415926535)) * 360.0), cap);
     
     // Relative PID
     /*
@@ -643,7 +643,7 @@ void odom::moveTo(double target_x, double target_y, double dir, double turnScale
   
   pid* PIDActivator = new pid();
   
-  while ((!(fabs(dist) < tolD)) && (Brain.timer(sec) < start + settleTime)) {
+  while ((!(abs(dist) < tolD)) && (Brain.timer(sec) < start + settleTime)) {
     y_error = target_y - odom::y;
     x_error = target_x - odom::x;
 
@@ -671,7 +671,7 @@ void odom::moveTo(double target_x, double target_y, double dir, double turnScale
     
     
     //if (abs(dist) < tolD && abs(theta) < tolA) break;
-    if (abs(dist) < tolD) break;
+    
 
     /*
     if (abs(dist) < tolD) {
@@ -684,9 +684,8 @@ void odom::moveTo(double target_x, double target_y, double dir, double turnScale
 
 
     // testing this out (remove and uncomment code above if doesnt work)
-    if (abs(dist) < 10) {
+    if (abs(theta) < 2) {
       theta = 0;
-      //dist = 0;
     }
     
     double rotational;
@@ -853,7 +852,7 @@ void odom::turnToPoint(double target_x, double target_y, double cap, double sett
   double thetaRad = theta/180.0 * 3.1415926535;  
   pid* PIDActivator = new pid(); 
   
-  while (fabs(theta) > 2 && (Brain.timer(sec) < start + settleTime)) { 
+  while (abs(theta) > 2 && (Brain.timer(sec) < start + settleTime)) { 
     double rotational = PIDActivator->gyroPid(theta, cap);
     target = ((atan2(x_error,y_error) * 180.0)/3.1415926535);
     /*
@@ -878,7 +877,7 @@ void odom::turnToPoint(double target_x, double target_y, double cap, double sett
 
     thetaRad = theta/180.0 * 3.1415926535;
 
-    if (fabs(theta) < 2) break;
+    if (abs(theta) < 2) break;
     
     odom::standardDrive(0, rotational);
 

@@ -27,11 +27,11 @@ distance DistanceFront = distance(PORT21);
 signature vision_sensor__GOAL_RED = signature (1, -1, 151, 75, -4553, -3821, -4187, 3, 0);
 signature vision_sensor__GOAL_BLUE = signature (2, -2935, -2581, -2758, 8247, 8705, 8476, 3, 0);
 signature vision_sensor__MOGORED = signature (3, 6431, 6843, 6637, 301, 527, 414, 2.5, 0);
-vision vision_sensor = vision (PORT17, 50, vision_sensor__GOAL_RED, vision_sensor__GOAL_BLUE, vision_sensor__MOGORED);
+vision vision_sensor = vision (PORT13, 50, vision_sensor__GOAL_RED, vision_sensor__GOAL_BLUE, vision_sensor__MOGORED);
 /*vex-vision-config:end*/
 motor middleLeft = motor(PORT5, ratio6_1, true);
 motor middleRight = motor(PORT6, ratio6_1, false);
-motor flywheel = motor(PORT18, ratio18_1, false);
+motor flywheel = motor(PORT17, ratio18_1, false);
 digital_out DigitalOutH = digital_out(Brain.ThreeWirePort.H);
 optical Optical = optical(PORT9);
 distance Distance = distance(PORT8);

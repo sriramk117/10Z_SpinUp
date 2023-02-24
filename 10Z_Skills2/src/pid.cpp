@@ -21,9 +21,9 @@ pid::pid() {
 double pid::axial(double dy, double pidCap) {
   //double degree = inches / 0.0385;
   //Settings for PID
-  axial_kP = 0.55;//0.3;//0.55;//0.3;//.5;
+  axial_kP = 0.69;//0.55;//0.3;//0.55;//0.3;//.5;
   axial_kI = 0;//0.001;//0.000001;//0.000001;//0.05;
-  axial_kD = 0.8;//0.8;//0.1;//0.06;//0.52;
+  axial_kD = 0.63;//0.65;//0.8;//0.1;//0.06;//0.52;
   axial_PidCap = pidCap;//1000000000000;
   //Measured Values
   //double desiredValue = degree;
@@ -123,7 +123,7 @@ double pid::gyroPid(double phi, double pidCap) {
   }
  
   // variable instantiations
-  turn_kP = 2.65;//2.6;//3.5;//3.1;//3.4;//2.4;//2;//0.94;//2;//0.85;//0.9;
+  turn_kP = 2.75;//2.65;//2.6;//3.5;//3.1;//3.4;//2.4;//2;//0.94;//2;//0.85;//0.9;
   turn_kD = 2.73;//2.73;//2.8;//2.71;//2.9; 
   turn_kI = 0.000000001;   
   turn_PidCap = pidCap;
