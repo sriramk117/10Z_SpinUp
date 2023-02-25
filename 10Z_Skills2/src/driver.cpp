@@ -155,8 +155,8 @@ void driver::angleChanger() {
 
 void driver::shooter() {
   
-    //flywheel.spin(vex::fwd, 83, percent);
-    flywheel.spin(vex::fwd, 11, voltageUnits::volt);
+    flywheel.spin(vex::fwd, 98, percent);
+    //flywheel.spin(vex::fwd, 11, voltageUnits::volt);
   
   
 }

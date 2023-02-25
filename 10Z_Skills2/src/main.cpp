@@ -307,7 +307,8 @@ void moveShooter(double deg) {
 }
 
 void startShooter(double vel) {
-  flywheel.spin(vex::fwd, vel, voltageUnits::volt);
+  //flywheel.spin(vex::fwd, vel, voltageUnits::volt);
+  flywheel.spin(vex::fwd, vel, percent);
 }
 
 /*
@@ -459,8 +460,8 @@ void autonomous(void) {
   
   
   //indexer.set(true);
-  startShooter(11.5);
-  //wait(2, sec);
+  startShooter(100);
+  wait(1, sec);
   odom::moveTo(0, -1.5, -1, 1, 1, 5, 600, 600, 10);
   //rollerSpin(0, 50, 2, 0);
   moveSpinner(-250);
@@ -470,16 +471,16 @@ void autonomous(void) {
   odom::turnToPoint(-18, 112, 550, 10);
   //SHOOT
   compression.set(true);
-  moveShooter(200);
+  moveShooter(250);
   compression.set(false);
   wait(625, msec);
   compression.set(true);
-  moveShooter(200);
+  moveShooter(250);
   compression.set(false);
   //wait(750, msec);
   wait(50, msec);
 
-  startShooter(10.8);
+  startShooter(100);
   odom::turnToPoint(44.6, 44.8, 500, 5);
   wait(50, msec);
   moveToConveyer(100000, 47, 47, 1, 2, 5, 5, 300, 600, 10); //44.6 44.8
@@ -502,10 +503,10 @@ void autonomous(void) {
   compression.set(false);
   wait(50, msec);
 
-  startShooter(11.75);
-  odom::turnToPoint(100, 79, 500, 10);
+  startShooter(100);
+  odom::turnToPoint(105, 83, 500, 10);
   wait(50, msec);
-  moveToConveyer(100000, 100, 79, 1, 2, 3, 5, 450, 1000000, 10);
+  moveToConveyer(100000, 105, 83, 1, 2, 3, 5, 300, 1000000, 10);
   convey.setVelocity(100, percent);
   convey.rotateFor(fwd, 2000, deg);
   wait(50, msec);
@@ -532,7 +533,7 @@ void autonomous(void) {
   //wait(50, msec);
   //odom::turnTo(1, 500);
   //wait(50, msec);
-  odom::moveTo(109, 78, -1, 0, 1, 5, 550, 300, 10);
+  odom::moveTo(109, 83, -1, 0, 1, 5, 550, 300, 10);
   //rollerSpin(0, -50, 10, 0);
   moveSpinner(-250);
   
