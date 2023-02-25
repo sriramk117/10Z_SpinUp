@@ -155,7 +155,7 @@ void driver::angleChanger() {
 
 void driver::shooter() {
   
-    flywheel.spin(vex::fwd, 98, percent);
+    flywheel.spin(vex::fwd, 97, percent);
     //flywheel.spin(vex::fwd, 11, voltageUnits::volt);
   
   
@@ -176,7 +176,7 @@ void driver::intake() {
       error = (100 + convey.position(degrees)) * 0.8;
       convey.spin(vex::reverse, error, percent);
     }*/
-    convey.spin(vex::reverse, 50, percent);
+    convey.spin(vex::reverse, 45, percent);
   } else {
     compression.set(false);
     droll = false;
@@ -185,7 +185,7 @@ void driver::intake() {
 }
 
 void driver::expand() {
-  if (Controller1.ButtonY.pressing()) {
+  if (Controller1.ButtonDown.pressing()) {
     DigitalOutH.set(true);
   }
 }
