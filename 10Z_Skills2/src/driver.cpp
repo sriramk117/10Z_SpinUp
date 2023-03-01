@@ -69,15 +69,25 @@ void driver::robotDrive(){
       k2 = 9;
     } 
 
-    
+    double e = 2.718281828459;
+    double t = 3.7;
+
+    double rotCurve = (pow(e, -t/10.0) + pow(e, (abs(rotational) - 127.0)/10.0) * (1 - pow(e, -t/10.0))) * rotational;
+    double lonCurve = (pow(e, ((abs(longitudinal) - 127)* t)/1000.0)) * longitudinal;    
 
     // Drive Code
-    frontRight.spin(vex::forward, k1*sqrt(fabs(longitudinal)) - k2*sqrt(fabs(rotational)), vex::percent); 
-    frontLeft.spin(vex::forward, k1*sqrt(fabs(longitudinal)) + k2*sqrt(fabs(rotational)), vex::percent);
-    middleRight.spin(vex::forward, k1*sqrt(fabs(longitudinal)) - k2*sqrt(fabs(rotational)), vex::percent);
-    middleLeft.spin(vex::forward, k1*sqrt(fabs(longitudinal)) + k2*sqrt(fabs(rotational)), vex::percent);
-    backRight.spin(vex::forward, k1*sqrt(fabs(longitudinal)) - k2*sqrt(fabs(rotational)), vex::percent);
-    backLeft.spin(vex::forward, k1*sqrt(fabs(longitudinal)) + k2*sqrt(fabs(rotational)), vex::percent);
+    //frontRight.spin(vex::forward, k1*sqrt(fabs(longitudinal)) - k2*sqrt(fabs(rotational)), vex::percent); 
+    //frontLeft.spin(vex::forward, k1*sqrt(fabs(longitudinal)) + k2*sqrt(fabs(rotational)), vex::percent);
+    //middleRight.spin(vex::forward, k1*sqrt(fabs(longitudinal)) - k2*sqrt(fabs(rotational)), vex::percent);
+    //middleLeft.spin(vex::forward, k1*sqrt(fabs(longitudinal)) + k2*sqrt(fabs(rotational)), vex::percent);
+    //backRight.spin(vex::forward, k1*sqrt(fabs(longitudinal)) - k2*sqrt(fabs(rotational)), vex::percent);
+    //backLeft.spin(vex::forward, k1*sqrt(fabs(longitudinal)) + k2*sqrt(fabs(rotational)), vex::percent);
+    frontRight.spin(vex::forward, lonCurve - rotCurve, vex::percent);
+    frontLeft.spin(vex::forward, lonCurve + rotCurve, vex::percent);
+    middleRight.spin(vex::forward, lonCurve - rotCurve, vex::percent);
+    middleLeft.spin(vex::forward, lonCurve + rotCurve, vex::percent);
+    backRight.spin(vex::forward, lonCurve - rotCurve, vex::percent);
+    backLeft.spin(vex::forward, lonCurve + rotCurve, vex::percent);
 
     // Driver Functions
     shooter();
@@ -155,7 +165,7 @@ void driver::angleChanger() {
 
 void driver::shooter() {
   
-    flywheel.spin(vex::fwd, 97, percent);
+    flywheel.spin(vex::fwd, 96, percent);
     //flywheel.spin(vex::fwd, 11, voltageUnits::volt);
   
   
@@ -166,7 +176,7 @@ void driver::intake() {
     droll = true;
     convey.spin(vex::forward, 100, vex::percent);
   } else if (Controller1.ButtonR2.pressing()){
-    convey.setPosition(0, degrees);
+    //convey.setPosition(0, degrees);
     compression.set(true);
     droll = true;
     //convey.spin(vex::reverse, 100, vex::percent);
@@ -176,7 +186,7 @@ void driver::intake() {
       error = (100 + convey.position(degrees)) * 0.8;
       convey.spin(vex::reverse, error, percent);
     }*/
-    convey.spin(vex::reverse, 45, percent);
+    convey.spin(vex::reverse, 100, percent);
   } else {
     compression.set(false);
     droll = false;

@@ -16,7 +16,7 @@ inertial Gyro = inertial(PORT11);
 motor dr4b = motor(PORT3, ratio18_1, true);
 controller Controller1 = controller(primary);
 encoder LE = encoder(Brain.ThreeWirePort.E);
-motor convey = motor(PORT7, ratio6_1, false);
+motor convey = motor(PORT7, ratio18_1, true);
 motor fourBar2 = motor(PORT1, ratio18_1, true);
 motor twoBar = motor(PORT10, ratio18_1, true);
 motor tilter = motor(PORT4, ratio18_1, true);
@@ -31,7 +31,7 @@ vision vision_sensor = vision (PORT13, 50, vision_sensor__GOAL_RED, vision_senso
 /*vex-vision-config:end*/
 motor middleLeft = motor(PORT5, ratio6_1, true);
 motor middleRight = motor(PORT6, ratio6_1, false);
-motor flywheel = motor(PORT17, ratio18_1, false);
+motor flywheel = motor(PORT17, ratio18_1, true);
 digital_out DigitalOutH = digital_out(Brain.ThreeWirePort.C);
 optical Optical = optical(PORT9);
 distance Distance = distance(PORT8);

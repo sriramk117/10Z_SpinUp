@@ -49,123 +49,7 @@
 // middleLeft           motor         5               
 // middleRight          motor         6               
 // flywheel             motor         17              
-// DigitalOutC          digital_out   C               
-// Optical              optical       9               
-// Distance             distance      8               
-// LineTrackerG         line          G               
-// indexer              digital_out   B               
-// compression          digital_out   A               
-// ---- END VEXCODE CONFIGURED DEVICES ----
-// ---- START VEXCODE CONFIGURED DEVICES ----
-// Robot Configuration:
-// [Name]               [Type]        [Port(s)]
-// frontRight           motor         16              
-// frontLeft            motor         15              
-// backRight            motor         19              
-// backLeft             motor         12              
-// Gyro                 inertial      11              
-// dr4b                 motor         3               
-// Controller1          controller                    
-// LE                   encoder       E, F            
-// convey               motor         7               
-// fourBar2             motor         1               
-// twoBar               motor         10              
-// tilter               motor         4               
-// DistanceBack         distance      2               
-// RotationTilter       rotation      20              
-// DistanceFront        distance      21              
-// vision_sensor        vision        13              
-// middleLeft           motor         5               
-// middleRight          motor         6               
-// flywheel             motor         17              
-// DigitalOutH          digital_out   H               
-// Optical              optical       9               
-// Distance             distance      8               
-// LineTrackerG         line          G               
-// indexer              digital_out   B               
-// compression          digital_out   A               
-// ---- END VEXCODE CONFIGURED DEVICES ----
-// ---- START VEXCODE CONFIGURED DEVICES ----
-// Robot Configuration:
-// [Name]               [Type]        [Port(s)]
-// frontRight           motor         16              
-// frontLeft            motor         15              
-// backRight            motor         19              
-// backLeft             motor         12              
-// Gyro                 inertial      11              
-// dr4b                 motor         3               
-// Controller1          controller                    
-// LE                   encoder       C, D            
-// convey               motor         7               
-// fourBar2             motor         1               
-// twoBar               motor         10              
-// tilter               motor         4               
-// DistanceBack         distance      2               
-// RotationTilter       rotation      20              
-// DistanceFront        distance      21              
-// vision_sensor        vision        13              
-// middleLeft           motor         5               
-// middleRight          motor         6               
-// flywheel             motor         17              
-// DigitalOutH          digital_out   H               
-// Optical              optical       9               
-// Distance             distance      8               
-// LineTrackerG         line          G               
-// indexer              digital_out   B               
-// compression          digital_out   A               
-// ---- END VEXCODE CONFIGURED DEVICES ----
-// ---- START VEXCODE CONFIGURED DEVICES ----
-// Robot Configuration:
-// [Name]               [Type]        [Port(s)]
-// frontRight           motor         16              
-// frontLeft            motor         15              
-// backRight            motor         19              
-// backLeft             motor         12              
-// Gyro                 inertial      11              
-// dr4b                 motor         3               
-// Controller1          controller                    
-// LE                   encoder       C, D            
-// convey               motor         7               
-// fourBar2             motor         1               
-// twoBar               motor         10              
-// tilter               motor         4               
-// DistanceBack         distance      2               
-// RotationTilter       rotation      20              
-// DistanceFront        distance      21              
-// vision_sensor        vision        13              
-// middleLeft           motor         5               
-// middleRight          motor         6               
-// flywheel             motor         18              
-// DigitalOutH          digital_out   H               
-// Optical              optical       9               
-// Distance             distance      8               
-// LineTrackerG         line          G               
-// indexer              digital_out   B               
-// compression          digital_out   A               
-// ---- END VEXCODE CONFIGURED DEVICES ----
-// ---- START VEXCODE CONFIGURED DEVICES ----
-// Robot Configuration:
-// [Name]               [Type]        [Port(s)]
-// frontRight           motor         16              
-// frontLeft            motor         15              
-// backRight            motor         19              
-// backLeft             motor         12              
-// Gyro                 inertial      11              
-// dr4b                 motor         3               
-// Controller1          controller                    
-// LE                   encoder       C, D            
-// convey               motor         7               
-// fourBar2             motor         1               
-// twoBar               motor         10              
-// tilter               motor         4               
-// DistanceBack         distance      2               
-// RotationTilter       rotation      20              
-// DistanceFront        distance      21              
-// vision_sensor        vision        17              
-// middleLeft           motor         5               
-// middleRight          motor         6               
-// flywheel             motor         18              
-// DigitalOutH          digital_out   H               
+// DigitalOutH          digital_out   C               
 // Optical              optical       9               
 // Distance             distance      8               
 // LineTrackerG         line          G               
@@ -394,8 +278,8 @@ void moveShooter(double deg) {
 }
 
 void startShooter(double vel) {
-  //flywheel.spin(vex::fwd, vel, voltageUnits::volt);
-  flywheel.spin(vex::fwd, vel, percent);
+  flywheel.spin(vex::fwd, vel, voltageUnits::volt);
+  //flywheel.spin(vex::fwd, vel, percent);
 }
 
 /*

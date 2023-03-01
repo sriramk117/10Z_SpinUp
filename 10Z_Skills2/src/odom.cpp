@@ -716,7 +716,7 @@ void odom::moveTo(double target_x, double target_y, double dir, double turnScale
 }
 
 
-void odom::setPoint(double target_x, double target_y, double dir, double tolD, double tolA, double capD, double capA, double settleTime) {
+void odom::setPoint(double target_x, double target_y, double dir, double turnScale, double tolD, double tolA, double capD, double capA, double settleTime) {
   double start = Brain.timer(sec); 
   
   frontRight.setStopping(hold);
@@ -729,8 +729,8 @@ void odom::setPoint(double target_x, double target_y, double dir, double tolD, d
   double y_error = target_y - odom::y;
   double x_error = target_x -  odom::x;
   
-  double curr_a = odom::a;
-  double target = ((atan2(x_error,y_error) * 180.0)/3.1415926535);
+  double curr_a = Gyro.heading(degrees);//odom::a;
+  double target = ((atan2(x_error,y_error) * 180.0)/3.1415926535); //((atan2(x_error,y_error) * 180.0)/3.1415926535);
   target += 90.0;
   if (target < 0) {
     target = 360.0 + target;
@@ -743,11 +743,10 @@ void odom::setPoint(double target_x, double target_y, double dir, double tolD, d
   double theta = correctAngle(target - curr_a);
 
   double thetaRad = theta/180.0 * 3.1415926535;
-
-  double turnScale = cos(thetaRad);
+  //double turnScale = cos(thetaRad);
 
   double dist = sqrt(y_error*y_error + x_error*x_error);
-  //double turnScale = cos(thetaRad); 
+  
   //theta = 180.0/3.1415926535 * atan2(x_error, y_error) - target_a;
   //thetaRad = theta/180.0 * 3.1415926535;
   
@@ -756,7 +755,7 @@ void odom::setPoint(double target_x, double target_y, double dir, double tolD, d
   
   pid* PIDActivator = new pid();
   
-  while ((!(fabs(x_error) < tolD && fabs(y_error) < tolD && fabs(theta) < tolA)) && (Brain.timer(sec) < start + settleTime)) {
+  while ((!(abs(dist) < tolD)) && (Brain.timer(sec) < start + settleTime)) {
     y_error = target_y - odom::y;
     x_error = target_x - odom::x;
 
@@ -765,52 +764,55 @@ void odom::setPoint(double target_x, double target_y, double dir, double tolD, d
     dist *= dir;
     
     
-    
     target = ((atan2(x_error,y_error) * 180.0)/3.1415926535);
     target += 90.0;
     if (target < 0) {
       target = 360.0 + target;
     }
     
-    curr_a = odom::a;
+    curr_a = Gyro.heading(degrees);
     if (dir < 0) {
-      curr_a = 360.0 - odom::a;
+      curr_a = 360.0 - Gyro.heading(degrees);
     }
 
     theta = correctAngle(target - curr_a);
-    thetaRad = theta/180.0 * 3.1415926535;
-    turnScale = cos(thetaRad);
     
-    //theta = 180.0/3.1415926535 * atan2(x_error, y_error) - target_a;
-    //thetaRad = theta/180.0 * 3.1415926535;
-    //sideError = dist * sin(thetaRad);
-    //theta = sideError*agg - odom::a;
 
-    if (abs(dist) < tolD && abs(theta) < tolA) break;
+    thetaRad = theta/180.0 * 3.1415926535;
+    //turnScale = cos(thetaRad);
+    
+    
+    //if (abs(dist) < tolD && abs(theta) < tolA) break;
+    
 
+    /*
     if (abs(dist) < tolD) {
       dist = 0;
+    }
+
+    if (abs(theta) < tolA) {
+      theta = 0;
+    }*/
+
+
+    // testing this out (remove and uncomment code above if doesnt work)
+    if (abs(theta) < 2) {
+      theta = 0;
     }
     
     double rotational;
     double axial;
 
     rotational = PIDActivator->gyroPid(theta, capA);
-    axial = PIDActivator->axial(((dist/(3.25*3.1415926535)) * 400.0), capD);
+    axial = PIDActivator->axial(((dist/(3.25*3.1415926535)) * 360.0), capD);
     
     //Brain.Screen.print("axial: %f, rotational: %f", axial, rotational);
     //Brain.Screen.newLine();
-    odom::standardDrive(axial, rotational);
+    odom::standardDrive(axial, rotational*turnScale);
 
     wait(10, msec);
   }
-  
-  frontRight.stop();
-  frontLeft.stop();
-  middleRight.stop();
-  middleLeft.stop();
-  backLeft.stop();
-  backRight.stop();
+
 
   if(PIDActivator) {
     delete PIDActivator;
