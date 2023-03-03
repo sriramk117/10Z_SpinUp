@@ -415,310 +415,40 @@ void autonomous(void) {
   // AUTON TEMPLATE
 
   //odom::moveTo(double target_x, double target_y, double dir, double turnScale, double tolD, double tolA, double capD, double capA, double settleTime);
+  //odom::setPoint(double target_x, double target_y, double dir, double turnScale, double tolD, double tolA, double capD, double capA, double settleTime);
   //odom::turnToPoint(double target_x, double target_y, double cap, double settleTime);
   //rollerSpin(bool color, double speed, double timeout, double extraspin)
-
   
-
-
-  
-
-  
-  //moveToConveyer(100000, 44.6, 44.8, 1, 1.7, 5, 5, 300, 600, 10);
-  
-  // WIN POINT
-  
-  
-  
-  //indexer.set(true);
-  startShooter(100);
-  wait(1, sec);
-  odom::moveTo(0, -1.5, -1, 1, 1, 5, 600, 600, 10);
-  //rollerSpin(0, 50, 2, 0);
-  moveSpinner(-250);
-  wait(50, msec);
-  odom::moveTo(0, 5.6, 1, 1, 1, 5, 600, 600, 10);
-  wait(50, msec);
-  odom::turnToPoint(-18, 112, 550, 10);
-  //SHOOT
-  compression.set(true);
+  //MATCHLOAD + 9 DISCS
+  //wait(3, sec);
+  startShooter(12);
+  wait(2, sec);
+  odom::turnToPoint(123, 14, 600, 4);
   moveShooter(250);
-  compression.set(false);
-  wait(500, msec);
-  compression.set(true);
+  wait(50, msec);
   moveShooter(250);
-  compression.set(false);
-  //wait(750, msec);
   wait(50, msec);
-
-  startShooter(100);
-  odom::turnToPoint(44.6, 44.8, 500, 5);
-  wait(50, msec);
-  moveToConveyer(100000, 47, 47, 1, 2, 5, 5, 450, 600, 5); //44.6 44.8
-  convey.setVelocity(100, percent);
-  convey.rotateFor(fwd, 2000, deg);
-  wait(50, msec);
-  odom::turnToPoint(-20, 112, 500, 10);
-  
-  // SHOOT
-  compression.set(true);
-  moveShooter(200);
-  compression.set(false);
-  wait(500, msec);
-  compression.set(true);
-  moveShooter(200);
-  compression.set(false);
-  wait(500, msec);
-  compression.set(true);
-  moveShooter(200);
-  compression.set(false);
-  wait(50, msec);
-
-  startShooter(100);
-  odom::turnToPoint(100.5, 90, 500, 10);
-  wait(50, msec);
-  moveToConveyer(100000, 100.5, 90, 1, 2, 3, 5, 450, 1000000, 5);
-  convey.setVelocity(100, percent);
-  convey.rotateFor(fwd, 2000, deg);
-  wait(50, msec);
-  odom::turnToPoint(-18, 100, 500, 2);
-  
-  // SHOOT
-  compression.set(true);
   moveShooter(250);
-  compression.set(false);
-  wait(500, msec);
-  compression.set(true);
+  wait(50, msec);
+
+  // ROLLER 1
+  odom::setPoint(55, 14, -1, 3, 3, 3, 600, 600, 5);
+  odom::moveTo(42, 5, -1, 2, 2, 2, 600, 600, 5);
+  wait(5, msec);
+
+  // COLLECT 3 DISCS
+  moveToConveyer(10000,90, 60, 1, 3.5, 6, 6, 400, 600, 5);
+  convey.setVelocity(100, percent);
+  convey.rotateFor(2000, degrees);
+  
+  // SHOOT 3 DISCS
+  odom::turnToPoint(123, 14, 600, 4);
   moveShooter(250);
-  compression.set(false);
-  wait(500, msec);
-  compression.set(true);
+  wait(50, msec);
   moveShooter(250);
-  compression.set(false);
   wait(50, msec);
-
-  //odom::turnToPoint(100, 78, 550, 2);
-  //wait(50, msec);
-  //odom::moveTo(100, 78, 1, 1, 2, 5, 550, 600, 10);
-
-  //wait(50, msec);
-  //odom::turnTo(1, 500);
-  //wait(50, msec);
-  odom::moveTo(101, 90, -1, 0, 2, 5, 550, 300, 1);
-  //rollerSpin(0, -50, 10, 0);
-  moveSpinner(-250);
-  
-  
-
-  //odom::turnToPoint(0, -24, 1000000, 10);
-  
-  /*
-  // .............................................
-  // FIRST HALF
-  // .............................................
-  
-  // SPINNER
-  startShooter(54);
-  odom::moveForwardPIDDistance(550);
-  //wait(5, msec);
-  moveSpinner(-750);
-  //wait(5, msec);
-  //odom::moveForwardPID(10, 400);
-  wait(5, msec);
-
-  // SPINNER
-  odom::turnTo(45, 450);
-  wait(5, msec);
-  moveForwardConveyer(28, 57000, 5, 450); //21
-  wait(5, msec);
-  odom::turnTo(180, 300);
-  wait(5, msec);
-  //odom::moveForwardPID(-11.45, 600); // -12
-  odom::moveForwardPIDDistance(450);
-  //wait(5, msec);
-  //rotateSpinnerOptical(0, 3);
-  moveSpinner(-450);
-  wait(5, msec);
-
-  // SHOOT 3 DISCS
-  odom::moveForwardPID(12, 500);
-  wait(5, msec);
-  odom::turnTo(80, 300);
-  wait(5, msec);
-  moveForwardConveyer(59, 57000, 5, 450); //58
-  wait(5, msec);
-  odom::turnTo(102, 450);
-  //wait(5, msec);
-  moveShooter(3500); //4000
-  //wait(5, msec);
-
-  // COLLECT 3 DISCS
-  odom::turnTo(178, 500);
-  wait(5, msec);
-  moveForwardConveyer(40.25, 9000000, 5, 200);
-  wait(5, msec);
-  moveForwardConveyer(-40.25, 9000000, 5, 200);
-  wait(5, msec);
-
-
-  //SHOOT 3 DISCS
-  odom::turnTo(100, 500);
-  //wait(5,msec);
-  moveShooter(3500);
-  //wait(5,msec);
-
-  // COLLECT 3 DISCS
-  startShooter(53);
-  odom::turnTo(90, 600);
-  wait(5, msec);
-  odom::moveForwardPID(-52, 450);
-  wait(5, msec);
-  odom::turnTo(135, 400);
-  wait(5, msec);
-  moveForwardConveyer(72, 50000, 10, 400);
-  convey.setVelocity(100, percent);
-  convey.rotateFor(fwd, 3000, deg);
-  wait(5, msec);
-  
-  // SHOOT 3 DISCS
-  odom::turnTo(45, 500);
-  wait(5, msec);
-  moveShooter(500);
+  moveShooter(250);
   wait(50, msec);
-  moveShooter(500);
-  wait(50, msec);
-  moveShooter(500);
-  //wait(5, msec);
-  
-  // COLLECT 3 DISCS
-  startShooter(54);
-  odom::moveForwardPID(9, 300);
-  wait(5, msec);  
-  odom::turnTo(90, 450);
-  wait(5, msec);
-  moveForwardConveyer(38, 50000, 10, 200);
-  convey.setVelocity(100, percent);
-  convey.rotateFor(fwd, 2500, deg);
-  wait(5, msec);
-
-  // SHOOT 3 DISCS
-  odom::reverseTurn(358, 400);
-  //wait(5, msec);
-  moveShooter(3500);
-  //wait(5, msec);
-
-  // SPINNER 
-  odom::reverseTurn(359, 450); 
-  wait(5, msec);
-  odom::moveForwardPID(-55, 450);
-  wait(5, msec);
-  odom::reverseTurn(270, 400); //300 
-  wait(5, msec);
-  //odom::moveForwardPID(-10, 550);
-  odom::moveForwardPIDDistance(450);
-  //wait(5, msec);
-  //rotateSpinnerOptical(0, 3);
-  moveSpinner(-450);
-  wait(5, msec);
-  odom::moveForwardPID(4, 550);
-  //odom::moveForwardPID(10, 450);
-  //wait(5, msec);
-
-  // SPINNER
-  odom::turnTo(245, 550); //500
-  wait(5, msec);
-  moveForwardConveyer(23, 57000, 5, 450);//21
-  wait(5, msec);
-  odom::turnTo(357, 400);
-  wait(5, msec);
-  odom::moveForwardPIDDistance(450);
-  //wait(5, msec);
-  moveSpinner(-500);
-  wait(5, msec);
-
-  // SHOOT 3 DISCS
-  //startShooter(58);
-  odom::moveForwardPID(10, 500);
-  wait(5, msec);
-  odom::turnTo(265, 450);
-  wait(5, msec);
-  moveForwardConveyer(58, 57000, 5, 450);//58
-  wait(5, msec);
-  odom::turnTo(282, 450);
-  //wait(5, msec);
-  moveShooter(3500);
-  //wait(5, msec);
-  //odom::turnTo(268, 600);
-  //wait(5, msec);
-
-
-
-  // COLLECT 3 DISCS
-  odom::turnTo(354, 500); //357
-  wait(5, msec);
-  moveForwardConveyer(39, 9000000, 5, 200);
-  wait(5, msec);
-  moveForwardConveyer(-39, 9000000, 5, 300);
-  wait(5, msec);
-
-  //SHOOT 3 DISCS
-  odom::turnTo(280, 500);
-  //wait(5,msec);
-  moveShooter(3500);
-  //wait(5,msec); // --> comment out
-
-  // COLLECT 3 DISCS
-  odom::turnTo(270, 500);
-  wait(5, msec);
-  odom::moveForwardPID(-50, 500); //450
-  wait(5, msec);
-  odom::turnTo(315, 500);
-  wait(5, msec);
-  moveForwardConveyer(72, 50000, 10, 400);
-  convey.setVelocity(100, percent);
-  convey.rotateFor(fwd, 2500, deg);
-  wait(5, msec);
-  
-  // SHOOT 3 DISCS
-  startShooter(53);
-  odom::turnTo(225, 400);
-  wait(5, msec);
-  moveShooter(500);
-  wait(50, msec);
-  moveShooter(500);
-  wait(50, msec);
-  moveShooter(500);
-  
-  // EARLY EXPANSION
-  odom::turnTo(145, 600); //145
-  odom::moveForwardPID(-30, 600); //40
-  odom::turnTo(132, 600);
-  expand();*/
-
-  // odom::turnTo(135, 600);
-  /*
-  // COLLECT 3 DISCS
-  odom::moveForwardPID(9, 400);
-  wait(5, msec);
-  odom::turnTo(270, 500);
-  wait(5, msec);
-  moveForwardConveyer(36, 50000, 10, 200);
-  convey.setVelocity(100, percent);
-  convey.rotateFor(fwd, 2500, deg);
-  wait(5, msec);
-
-  // SHOOT 3 DISCS
-  odom::turnTo(172, 450);
-  //wait(5, msec);
-  moveShooter(4000);
-  wait(5, msec);
-
-  // SPINNER 
-  odom::turnTo(179, 600);
-  //wait(5, msec);
-  odom::moveForwardPID(-60, 600);
-  odom::turnTo(135, 600);
-  //expand();*/
   
 
   while (1){

@@ -72,7 +72,10 @@ void driver::robotDrive(){
     double e = 2.718281828459;
     double t = 3.7;
 
-    double rotCurve = (pow(e, -t/10.0) + pow(e, (abs(rotational) - 127.0)/10.0) * (1 - pow(e, -t/10.0))) * rotational;
+    double rotCurve = pow(rotational,2) * 0.01;//(pow(e, -t/10.0) + pow(e, (abs(rotational) - 127.0)/10.0) * (1 - pow(e, -t/10.0))) * rotational;
+    if (rotational < 0) {
+      rotCurve *= -1;
+    }
     double lonCurve = (pow(e, ((abs(longitudinal) - 127)* t)/1000.0)) * longitudinal;    
 
     // Drive Code
@@ -177,7 +180,7 @@ void driver::intake() {
     convey.spin(vex::forward, 100, vex::percent);
   } else if (Controller1.ButtonR2.pressing()){
     //convey.setPosition(0, degrees);
-    compression.set(true);
+    //compression.set(true);
     droll = true;
     //convey.spin(vex::reverse, 100, vex::percent);
     /*
@@ -186,7 +189,7 @@ void driver::intake() {
       error = (100 + convey.position(degrees)) * 0.8;
       convey.spin(vex::reverse, error, percent);
     }*/
-    convey.spin(vex::reverse, 100, percent);
+    convey.spin(vex::reverse, 40, percent);
   } else {
     compression.set(false);
     droll = false;
