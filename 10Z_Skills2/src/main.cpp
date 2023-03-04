@@ -201,12 +201,12 @@ void moveForwardConveyer(double d, double c, double t, double cap) {
   convey.stop();
 }
 
-void moveToConveyer(double c, double target_x, double target_y, double dir, double turnScale, double tolD, double tolA, double capD, double capA, double settleTime) {
+void moveToConveyer(double c, double target_x, double target_y, double dir, double turnScale, double tolD, double capD, double capA, double settleTime) {
   //compression.set(false);
   convey.setStopping(coast);
   convey.setVelocity(100, percent);
   convey.startRotateFor(fwd, c, deg);
-  odom::moveTo(target_x, target_y, dir, turnScale, tolD, tolA, capD, capA, settleTime);
+  odom::moveTo(target_x, target_y, dir, turnScale, tolD, capD, capA, settleTime);
   convey.stop();
 }
 
@@ -432,12 +432,13 @@ void autonomous(void) {
   wait(50, msec);
 
   // ROLLER 1
-  odom::setPoint(55, 14, -1, 3, 3, 3, 600, 600, 5);
-  odom::moveTo(42, 5, -1, 2, 2, 2, 600, 600, 5);
+  odom::moveTo(42, 15, -1, 3.5, 2, 600, 600, 5);
+  odom::turnTo(90, 600);
+  odom::moveTo(42, 5, -1, 2, 2, 600, 600, 5);
   wait(5, msec);
 
   // COLLECT 3 DISCS
-  moveToConveyer(10000,90, 60, 1, 3.5, 6, 6, 400, 600, 5);
+  moveToConveyer(10000,84, 60, 1, 2.5, 2, 400, 600, 5);
   convey.setVelocity(100, percent);
   convey.rotateFor(2000, degrees);
   

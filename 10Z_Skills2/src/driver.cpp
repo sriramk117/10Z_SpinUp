@@ -49,9 +49,9 @@ void driver::robotDrive(){
     backLeft.setStopping(coast);
 
     //Controller Position Values
-    double longitudinal = Controller1.Axis3.position(vex::percent);  //Axis 3 controls forward + backward
+    double longitudinal = Controller1.Axis3.position();  //Axis 3 controls forward + backward
     //double lateral = Controller1.Axis4.position(vex::percent);       //Axis 4 controls strafe left + strafe right
-    double rotational = Controller1.Axis1.position(vex::percent);    //Axis 1 controls turning
+    double rotational = Controller1.Axis1.position();    //Axis 1 controls turning
 
     //Acceleration Curve
     double k1 = 10;//0.85;
@@ -70,14 +70,16 @@ void driver::robotDrive(){
     } 
 
     double e = 2.718281828459;
-    double t = 3.7;
+    double t = 6.7;
 
-    double rotCurve = pow(rotational,2) * 0.01;//(pow(e, -t/10.0) + pow(e, (abs(rotational) - 127.0)/10.0) * (1 - pow(e, -t/10.0))) * rotational;
-    if (rotational < 0) {
-      rotCurve *= -1;
-    }
-    double lonCurve = (pow(e, ((abs(longitudinal) - 127)* t)/1000.0)) * longitudinal;    
-
+    double rotCurve = 0.9 * (pow(e, -t/10.0) + pow(e, (abs(rotational) - 127.0)/10.0) * (1 - pow(e, -t/10.0))) * rotational;//pow(rotational,2) * 0.01;//(pow(e, -t/10.0) + pow(e, (abs(rotational) - 127.0)/10.0) * (1 - pow(e, -t/10.0))) * rotational;
+    //if (rotational < 0) {
+    //  rotCurve *= -1;
+    //}
+    double lonCurve = (pow(e, ((abs(longitudinal) - 127)* t)/1000.0)) * longitudinal;//pow(longitudinal,2) * 0.01;//(pow(e, ((abs(longitudinal) - 127)* t)/1000.0)) * longitudinal;    
+    //if (longitudinal < 0) {
+    //  lonCurve *= -1;
+    //}
     // Drive Code
     //frontRight.spin(vex::forward, k1*sqrt(fabs(longitudinal)) - k2*sqrt(fabs(rotational)), vex::percent); 
     //frontLeft.spin(vex::forward, k1*sqrt(fabs(longitudinal)) + k2*sqrt(fabs(rotational)), vex::percent);
@@ -168,8 +170,12 @@ void driver::angleChanger() {
 
 void driver::shooter() {
   
-    flywheel.spin(vex::fwd, 96, percent);
+    flywheel.spin(vex::fwd, 85, percent);
     //flywheel.spin(vex::fwd, 11, voltageUnits::volt);
+
+    if (Controller1.ButtonX.pressing()) {
+      flywheel.spin(vex::fwd, 85, percent);
+    }
   
   
 }
@@ -189,7 +195,7 @@ void driver::intake() {
       error = (100 + convey.position(degrees)) * 0.8;
       convey.spin(vex::reverse, error, percent);
     }*/
-    convey.spin(vex::reverse, 40, percent);
+    convey.spin(vex::reverse, 100, percent);
   } else {
     compression.set(false);
     droll = false;

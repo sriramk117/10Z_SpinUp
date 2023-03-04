@@ -29,8 +29,8 @@ class odom {
   vector<vector <double> > vector_List = {};
   //float global_time; Trial
   
-  static void moveTo(double target_x, double target_y, double dir, double turnScale, double tolD, double tolA, double capD, double capA, double settleTime); //change parameters
-  static void setPoint(double target_x, double target_y, double dir, double turnScale, double tolD, double tolA, double capD, double capA, double settleTime);
+  static void moveTo(double target_x, double target_y, double dir, double turnScale, double tolD, double capD, double capA, double settleTime); //change parameters
+  static void setPoint(double target_x, double target_y, double dir, double turnScale, double tolD, double capD, double capA, double settleTime);
   static void turnToPoint(double target_x, double target_y, double cap, double settleTime);
   static void standardDrive(double lon, double rot);
   static void rotStandardDrive(double lon, double rot);

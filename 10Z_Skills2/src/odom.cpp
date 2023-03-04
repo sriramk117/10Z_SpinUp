@@ -566,7 +566,7 @@ pair<double, double> closest(pair<double, double> curr, pair<double, double> tar
   return {curr.first + scalar.first, curr.second + scalar.second};
 }
 
-void odom::moveTo(double target_x, double target_y, double dir, double turnScale, double tolD, double tolA, double capD, double capA, double settleTime) {
+void odom::moveTo(double target_x, double target_y, double dir, double turnScale, double tolD,  double capD, double capA, double settleTime) {
   double start = Brain.timer(sec); 
   
   frontRight.setStopping(hold);
@@ -678,7 +678,7 @@ void odom::moveTo(double target_x, double target_y, double dir, double turnScale
 }
 
 
-void odom::setPoint(double target_x, double target_y, double dir, double turnScale, double tolD, double tolA, double capD, double capA, double settleTime) {
+void odom::setPoint(double target_x, double target_y, double dir, double turnScale, double tolD, double capD, double capA, double settleTime) {
   double start = Brain.timer(sec); 
   
   frontRight.setStopping(hold);
