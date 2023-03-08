@@ -201,12 +201,13 @@ void moveForwardConveyer(double d, double c, double t, double cap) {
   convey.stop();
 }
 
-void moveToConveyer(double c, double target_x, double target_y, double dir, double turnScale, double tolD, double capD, double capA, double settleTime) {
+void moveToConveyer(double c, double waittime, double target_x, double target_y, double dir, double turnScale, double tolD, double capD, double capA, double settleTime) {
   //compression.set(false);
   convey.setStopping(coast);
-  convey.setVelocity(100, percent);
+  convey.setVelocity(200, rpm);
   convey.startRotateFor(fwd, c, deg);
   odom::moveTo(target_x, target_y, dir, turnScale, tolD, capD, capA, settleTime);
+  wait(waittime, msec);
   convey.stop();
 }
 
@@ -278,7 +279,7 @@ void moveShooter(double deg) {
 }
 
 void startShooter(double vel) {
-  flywheel.spin(vex::fwd, vel, voltageUnits::volt);
+  flywheel.spin(vex::fwd, vel, percent);
   //flywheel.spin(vex::fwd, vel, percent);
 }
 
@@ -414,13 +415,141 @@ void autonomous(void) {
 
   // AUTON TEMPLATE
 
-  //odom::moveTo(double target_x, double target_y, double dir, double turnScale, double tolD, double tolA, double capD, double capA, double settleTime);
+  //odom::moveTo(double target_x, double target_y, double dir, double turnScale, double tolD, double tolA, double capD, double capA, doluble settleTime);
   //odom::setPoint(double target_x, double target_y, double dir, double turnScale, double tolD, double tolA, double capD, double capA, double settleTime);
   //odom::turnToPoint(double target_x, double target_y, double cap, double settleTime);
   //rollerSpin(bool color, double speed, double timeout, double extraspin)
   
+  //odom::turnTo(180,600);
+  //moveToConveyer(10000, 48, 87, 1, 2.52, 2, 550, 600, 5); //2.4;//2.245
+  
+  // ROLLER 1
+  startShooter(70);
+  odom::moveTo(36, 8.5, -1, 1, 2.52, 600, 600, 5);
+  wait(5, msec);
+  // roller sub (REMOVE)
+  wait(500, msec);
+  // roller sub (REMOVE)
+
+  // COLLECT DISCS
+  odom::moveTo(36, 14, 1, 2.52, 1, 600, 600, 5);
+  wait(5, msec);
+  odom::turnToPoint(21, 27, 600, 2);
+  wait(5, msec);
+  moveToConveyer(10000, 0, 21,27, 1, 1, 2, 550, 600, 2);
+  wait(5, msec);
+
+  // ROLLER 2
+  odom::turnTo(180, 550);
+  wait(5, msec);
+  odom::moveTo(10, 27, -1, 1, 1, 550, 600, 2);
+  //wait(5, msec);
+  // roller sub (REMOVE)
+  wait(500, msec);
+  // roller sub (REMOVE)
+ 
+  // SHOOT DISCS
+  moveToConveyer(10000, 0, 15.5, 76.5, 1, 1.8, 2, 550, 600, 5); //15.5, 88.5
+  wait(5, msec);
+  odom::turnToPoint(23, 128, 600, 2);
+  wait(5, msec);
+  moveShooter(1000);
+  
+  // COLLECT DISCS
+  //odom::turnToPoint(25, 89, 550, 2);
+  //wait(5, msec);
+  moveToConveyer(10000, 0, 25, 88, 1, 2, 1, 200, 600, 5);
+  moveToConveyer(10000, 300, 53, 93, 1, 1.8, 2, 150, 600, 5);
+  wait(5, msec);
+
+  // SHOOT DISCS
+  moveToConveyer(10000, 50, 15, 93, -1, 1.2, 2, 475, 600, 5);
+  wait(5, msec);
+  odom::turnToPoint(23, 128, 600, 2);
+  wait(5, msec);
+  moveShooter(1000);
+
+  // COLLECT DISCS
+  startShooter(95);
+  odom::moveTo(26, 48, -1, 2.52, 1.5, 550, 600, 5);
+  wait(5, msec);
+  odom::turnToPoint(70, 90, 550, 2);
+  wait(5, msec);
+  moveToConveyer(10000, 500, 70, 90, 1, 0.2, 2, 250, 600, 5);
+  wait(5, msec);
+  
+  // SHOOT DISCS
+  odom::turnToPoint(23, 128, 550, 2);
+  moveShooter(250);
+  wait(50, msec);
+  moveShooter(250);
+  wait(50, msec);
+  moveShooter(250);
+  wait(50, msec);
+
+  // COLLECT 3 DISCS
+  startShooter(85);
+  odom::turnToPoint(115, 140, 550, 2);
+  wait(5, msec);
+  moveToConveyer(10000, 250, 115, 140, 1, 1, 2, 300, 600, 5);
+  wait(5, msec);
+
+  // ROLLER 3 
+  odom::turnTo(270, 600);
+  wait(5, msec);
+  odom::moveTo(115, 140, -1, 0.1, 1, 600, 600, 5); //112, 141.5
+  wait(5, msec);
+  // roller sub (REMOVE)
+  wait(500, msec);
+  // roller sub (REMOVE)
+
+  // SHOOT 3 DISCS
+  moveToConveyer(10000, 0, 60.25, 136, 1, 2.2, 2, 500, 600, 5);
+  wait(5, msec);
+  odom::turnToPoint(25, 128, 600, 2);
+  //wait(5, msec);
+  moveShooter(1000);
+
+  // COLLECT 3 DISCS
+  odom::turnToPoint(60.5, 118, 550, 2);
+  wait(5, msec);
+  moveToConveyer(10000, 0, 60, 118, 1, 1, 2, 200, 600, 5);
+  moveToConveyer(10000, 250, 60, 95, 1, 1, 2, 150, 600, 5);
+  wait(5, msec);
+
+  // SHOOT DISCS
+  //moveToConveyer(10000, 250, 48, 96, -1, 1, 2, 550, 600, 5);
+  //wait(5, msec);
+  odom::turnToPoint(22, 128, 600, 2);
+  moveShooter(1000);
+  
+  // COLLECT 3 DISCS
+  odom::turnToPoint(99, 107, 550, 2);
+  wait(5, msec);
+  moveToConveyer(100000, 0, 99, 118, 1, 1.5, 2, 550, 600, 5);
+  moveToConveyer(100000, 250, 125, 118, 1, 1.5, 2, 200, 600, 5);
+
+  // ROLLER 4
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+  
+
+
+  // MATCHLOADING (300+ AUTON)
   //MATCHLOAD + 9 DISCS
-  //wait(3, sec);
+  /*
   startShooter(12);
   wait(2, sec);
   odom::turnToPoint(123, 14, 600, 4);
@@ -449,7 +578,7 @@ void autonomous(void) {
   moveShooter(250);
   wait(50, msec);
   moveShooter(250);
-  wait(50, msec);
+  wait(50, msec);*/
   
 
   while (1){
@@ -504,7 +633,13 @@ void usercontrol(void) {
   //vex::thread positionTrackingThread(odom::positionTracking); // Define thread for Position Tracking Method
   // User control code here, inside the loop
 
-
+  frontRight.setPosition(0, degrees);
+  frontLeft.setPosition(0, degrees);
+  middleRight.setPosition(0, degrees);
+  middleLeft.setPosition(0, degrees);
+  backLeft.setPosition(0, degrees);
+  backRight.setPosition(0, degrees);
+  
   driver::robotDrive();
   
 

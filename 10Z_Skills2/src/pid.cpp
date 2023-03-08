@@ -104,7 +104,7 @@ double pid::axial(double dy, double pidCap) {
   backRight.spin(fwd, vel, rpm);
   frontLeft.spin(fwd, vel, rpm);
   backLeft.spin(fwd, vel, rpm);*/
-  wait(1, msec);
+  //wait(1, msec);
   ////////////////////////////////
   //robotPosition = (fabs(LE.position(degrees)) + fabs(RE.position(degrees)))/2;
   //error = desiredValue - robotPosition; //robot position should be equal to y value returned by position tracking algorithm
@@ -123,9 +123,9 @@ double pid::gyroPid(double phi, double pidCap) {
   }
  
   // variable instantiations
-  turn_kP = 2.75;//2.65;//2.6;//3.5;//3.1;//3.4;//2.4;//2;//0.94;//2;//0.85;//0.9;
-  turn_kD = 2.73;//2.73;//2.8;//2.71;//2.9; 
-  turn_kI = 0.000000001;   
+  turn_kP = 3.0;//2.9;//2.795;//2.787;//2.65;//2.6;//3.5;//3.1;//3.4;//2.4;//2;//0.94;//2;//0.85;//0.9;
+  turn_kD = 2.73;//2.73;//2.73;//2.8;//2.71;//2.9; 
+  turn_kI = 0;//0.000000001;   
   turn_PidCap = pidCap;
   //double vel = 0;
   //int badnums = 0;

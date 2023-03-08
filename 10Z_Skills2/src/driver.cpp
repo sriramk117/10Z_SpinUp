@@ -170,11 +170,11 @@ void driver::angleChanger() {
 
 void driver::shooter() {
   
-    flywheel.spin(vex::fwd, 85, percent);
+    flywheel.spin(vex::fwd, 87, percent);
     //flywheel.spin(vex::fwd, 11, voltageUnits::volt);
 
     if (Controller1.ButtonX.pressing()) {
-      flywheel.spin(vex::fwd, 85, percent);
+      flywheel.spin(vex::fwd, 70, percent); //87
     }
   
   

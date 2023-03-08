@@ -15,7 +15,7 @@ typedef string s;
 typedef odom o;
 typedef pid p;
 
-#define INIT_GYRO_HEADING 180
+#define INIT_GYRO_HEADING 90
 // Wheel 
 double wheelradius = 3.25; 
 double wheelCircumference = M_PI * (wheelradius * 2);
@@ -27,8 +27,8 @@ double theta0 = 0;
 double theta1 = 0;
 double dTheta = theta1 - theta0;
 
-double odom::x = 72; // up for modification
-double odom::y = 8;  // up for modification
+double odom::x = 36; // up for modification
+double odom::y = 12;  // up for modification
 double odom::a = INIT_GYRO_HEADING;
 
 bool odom::active = true;
@@ -553,8 +553,8 @@ pair<double, double> normalize(double x, double y) {
 
 pair<double, double> closest(pair<double, double> curr, pair<double, double> target) {
   double curr_heading = (Gyro.heading(degrees) * 3.1415926535)/180.0;
-  double head_x = sin(curr_heading);
-  double head_y = -cos(curr_heading);
+  double head_x = -cos(curr_heading);
+  double head_y = sin(curr_heading);
   
   pair<double, double> n = normalize(head_x, head_y); 
   pair<double, double> v = {target.first - curr.first, target.second - curr.second};
@@ -579,8 +579,8 @@ void odom::moveTo(double target_x, double target_y, double dir, double turnScale
   double y_error = target_y - odom::y;
   double x_error = target_x -  odom::x;
   
-  double curr_a = Gyro.heading(degrees);//odom::a;
-  double target = ((atan2(x_error,y_error) * 180.0)/3.1415926535); //((atan2(x_error,y_error) * 180.0)/3.1415926535);
+  double curr_a = Gyro.heading(degrees);
+  double target = ((atan2(x_error,y_error) * 180.0)/3.1415926535); 
   target += 90.0;
   if (target < 0) {
     target = 360.0 + target;
@@ -595,25 +595,17 @@ void odom::moveTo(double target_x, double target_y, double dir, double turnScale
 
   double theta = correctAngle(target - curr_a);
 
-  double thetaRad = theta/180.0 * 3.1415926535;
-  //double turnScale = cos(thetaRad);
-
+  double distTarget = sqrt(y_error*y_error + x_error*x_error);
+  double distClosest = sqrt(y_error*y_error + x_error*x_error);
   double dist = sqrt(y_error*y_error + x_error*x_error);
   
-  //theta = 180.0/3.1415926535 * atan2(x_error, y_error) - target_a;
-  //thetaRad = theta/180.0 * 3.1415926535;
-  
-  //double sideError = dist * sin(thetaRad);
-  //theta = sideError*agg - odom::a;
-  
   pid* PIDActivator = new pid();
-  bool thetaTol = false;
-  while ((!(abs(dist) < tolD)) && (Brain.timer(sec) < start + settleTime)) {
+  while (!(abs(dist) < tolD) && (Brain.timer(sec) < start + settleTime)) {
     y_error = target_y - odom::y;
     x_error = target_x - odom::x;
 
-    dist = sqrt(y_error*y_error + x_error*x_error);
-    dist *= dir;
+    distTarget = sqrt(y_error*y_error + x_error*x_error);
+    distTarget *= dir;
     
     target = ((atan2(x_error,y_error) * 180.0)/3.1415926535);
     target += 90.0;
@@ -629,26 +621,18 @@ void odom::moveTo(double target_x, double target_y, double dir, double turnScale
       }
     }
 
-    theta = correctAngle(target - curr_a);
-    
-
-    thetaRad = theta/180.0 * 3.1415926535;
-
-
-    // testing this out (remove and uncomment code above if doesn't work)
-    /*(if (abs(dist) < 10 || abs(theta) < 3 || thetaTol) {
-      theta = 0;
-      //thetaTol = true;
-    }*/
-
     // testing this out (remove and uncomment code if doesn't work)
     pair<double, double> closestPoint = closest({odom::x, odom::y}, {target_x, target_y}); 
-    if (abs(dist) < 18) {
+    if (abs(distTarget) < 15) {
       y_error = closestPoint.second - odom::y;
       x_error = closestPoint.first - odom::x;
-      dist = sqrt(y_error*y_error + x_error*x_error);
-      dist *= dir;
+      distClosest = sqrt(y_error*y_error + x_error*x_error);
+      distClosest *= dir;
+      dist = distClosest;
       theta = 0;
+    } else {
+      dist = distTarget;
+      theta = correctAngle(target - curr_a);
     }
     
     
@@ -660,7 +644,7 @@ void odom::moveTo(double target_x, double target_y, double dir, double turnScale
     
     odom::standardDrive(axial, rotational*turnScale);
 
-    wait(10, msec);
+    wait(2, msec); //wait(10, msec)
   }
   
   frontRight.stop();
@@ -809,16 +793,6 @@ void odom::turnToPoint(double target_x, double target_y, double cap, double sett
     target = 360.0 + target;
   }
     
-  /*
-  if (target <= 90 && target > 0) {
-    target = 180.0 - target;
-  } else if (target > 90 && target <= 180) {
-    target = target;
-  } else if (target <= 0 && target > -90) {
-    target = 0.0 - target;
-  } else if (target <= -90 && target >= -180) {
-    target = abs(target);
-  }*/
   double theta = correctAngle(target - odom::a);
   double thetaRad = theta/180.0 * 3.1415926535;  
   pid* PIDActivator = new pid(); 
@@ -826,24 +800,12 @@ void odom::turnToPoint(double target_x, double target_y, double cap, double sett
   while (abs(theta) > 2 && (Brain.timer(sec) < start + settleTime)) { 
     double rotational = PIDActivator->gyroPid(theta, cap);
     target = ((atan2(x_error,y_error) * 180.0)/3.1415926535);
-    /*
-    if (target < 90 && target > 0) {
-      target = 180.0 - target;
-    } else if (target >= 90 && target <= 180) {
-      target = target + 90.0;
-    } else if (target <= 0 && target >= -90) {
-      target = 0.0 - target;
-    } else if (target < -90 && target >= -180) {
-      target = 180.0 + abs(target);
-    }*/
+    
     target += 90.0;
     if (target < 0) {
       target = 360.0 + target;
     }
     
-    //if (target < 0) {
-    //  target += 180;
-    //} 
     theta = correctAngle(target - odom::a);
 
     thetaRad = theta/180.0 * 3.1415926535;
