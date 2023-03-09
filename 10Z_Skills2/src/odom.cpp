@@ -623,7 +623,7 @@ void odom::moveTo(double target_x, double target_y, double dir, double turnScale
 
     // testing this out (remove and uncomment code if doesn't work)
     pair<double, double> closestPoint = closest({odom::x, odom::y}, {target_x, target_y}); 
-    if (abs(distTarget) < 15) {
+    if (abs(distTarget) < 15) { //15
       y_error = closestPoint.second - odom::y;
       x_error = closestPoint.first - odom::x;
       distClosest = sqrt(y_error*y_error + x_error*x_error);

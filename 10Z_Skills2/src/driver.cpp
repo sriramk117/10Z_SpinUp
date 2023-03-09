@@ -1,6 +1,7 @@
 #include "vex.h"
 #include "driver.h"
 #include "odom.h"
+#include <iostream>
 
 using namespace std;
 
@@ -41,17 +42,17 @@ void driver::robotDrive(){
     // Insert user code here. This is where you use the joystick values to
     // update your motors, etc.
     // ........................................................................
-    frontRight.setStopping(coast);
-    frontLeft.setStopping(coast);
-    middleRight.setStopping(coast);
-    middleLeft.setStopping(coast);
-    backRight.setStopping(coast);
-    backLeft.setStopping(coast);
+    frontRight.setStopping(brake);
+    frontLeft.setStopping(brake);
+    middleRight.setStopping(brake);
+    middleLeft.setStopping(brake);
+    backRight.setStopping(brake);
+    backLeft.setStopping(brake);
 
     //Controller Position Values
-    double longitudinal = Controller1.Axis3.position();  //Axis 3 controls forward + backward
+    double longitudinal = Controller1.Axis3.position(vex::percent); //Axis 3 controls forward + backward
     //double lateral = Controller1.Axis4.position(vex::percent);       //Axis 4 controls strafe left + strafe right
-    double rotational = Controller1.Axis1.position();    //Axis 1 controls turning
+    double rotational = Controller1.Axis1.position(vex::percent);    //Axis 1 controls turning
 
     //Acceleration Curve
     double k1 = 10;//0.85;
@@ -70,13 +71,19 @@ void driver::robotDrive(){
     } 
 
     double e = 2.718281828459;
-    double t = 6.7;
+    double t = 13;//13;//15;//6;//19;//15;//10;//12;//6.7;
 
-    double rotCurve = 0.9 * (pow(e, -t/10.0) + pow(e, (abs(rotational) - 127.0)/10.0) * (1 - pow(e, -t/10.0))) * rotational;//pow(rotational,2) * 0.01;//(pow(e, -t/10.0) + pow(e, (abs(rotational) - 127.0)/10.0) * (1 - pow(e, -t/10.0))) * rotational;
+    double rotCurve =  0.75 * (pow(e, -t/10.0) + pow(e, (abs(rotational) - 100.0)/10.0) * (1 - pow(e, -t/10.0))) * rotational;//pow(rotational,2) * 0.01;//(pow(e, -t/10.0) + pow(e, (abs(rotational) - 127.0)/10.0) * (1 - pow(e, -t/10.0))) * rotational;
+    if (rotational > 5.0 && rotational < 30.0) {
+      rotCurve = 10.0;
+    }
+    if (rotational < -5.0 && rotational > -30.0) {
+      rotCurve = -10.0;
+    }
     //if (rotational < 0) {
     //  rotCurve *= -1;
     //}
-    double lonCurve = (pow(e, ((abs(longitudinal) - 127)* t)/1000.0)) * longitudinal;//pow(longitudinal,2) * 0.01;//(pow(e, ((abs(longitudinal) - 127)* t)/1000.0)) * longitudinal;    
+    double lonCurve = longitudinal;//(pow(e, ((abs(longitudinal) - 100.0)* t)/1000.0)) * longitudinal;//pow(longitudinal,2) * 0.01;//(pow(e, ((abs(longitudinal) - 127)* t)/1000.0)) * longitudinal;    
     //if (longitudinal < 0) {
     //  lonCurve *= -1;
     //}
@@ -170,11 +177,11 @@ void driver::angleChanger() {
 
 void driver::shooter() {
   
-    flywheel.spin(vex::fwd, 87, percent);
+    flywheel.spin(vex::fwd, 60, percent);
     //flywheel.spin(vex::fwd, 11, voltageUnits::volt);
 
     if (Controller1.ButtonX.pressing()) {
-      flywheel.spin(vex::fwd, 70, percent); //87
+      flywheel.spin(vex::fwd, 60, percent); //87
     }
   
   

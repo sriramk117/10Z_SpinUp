@@ -265,7 +265,7 @@ void moveSpinner(double deg) {
 // CHANGED SHOOTER CODE
 void moveShooter(double deg) {
   
-  convey.setVelocity(100, percent);
+  convey.setVelocity(95, percent);
   convey.rotateFor(vex::reverse, deg, degrees);
   //convey.stop();
   //convey.setPosition(0, degrees);
@@ -425,16 +425,16 @@ void autonomous(void) {
   
   // ROLLER 1
   startShooter(70);
-  odom::moveTo(36, 8.5, -1, 1, 2.52, 600, 600, 5);
+  odom::moveTo(36, 8.5, -1, 0.1, 2.52, 600, 600, 5);
   wait(5, msec);
   // roller sub (REMOVE)
   wait(500, msec);
   // roller sub (REMOVE)
 
   // COLLECT DISCS
-  odom::moveTo(36, 14, 1, 2.52, 1, 600, 600, 5);
+  odom::moveTo(36, 14, 1, 0.1, 1, 600, 600, 5);
   wait(5, msec);
-  odom::turnToPoint(21, 27, 600, 2);
+  odom::turnToPoint(21, 27, 550, 2);
   wait(5, msec);
   moveToConveyer(10000, 0, 21,27, 1, 1, 2, 550, 600, 2);
   wait(5, msec);
@@ -442,36 +442,37 @@ void autonomous(void) {
   // ROLLER 2
   odom::turnTo(180, 550);
   wait(5, msec);
-  odom::moveTo(10, 27, -1, 1, 1, 550, 600, 2);
+  odom::moveTo(11, 27, -1, 0.1, 1, 550, 600, 2);
   //wait(5, msec);
   // roller sub (REMOVE)
   wait(500, msec);
   // roller sub (REMOVE)
  
   // SHOOT DISCS
-  moveToConveyer(10000, 0, 15.5, 76.5, 1, 1.8, 2, 550, 600, 5); //15.5, 88.5
+  moveToConveyer(10000, 0, 17.5, 87.5, 1, 1.8, 2, 550, 600, 5); //15.5, 76.5
   wait(5, msec);
-  odom::turnToPoint(23, 128, 600, 2);
+  odom::turnToPoint(29, 128, 550, 2);
   wait(5, msec);
   moveShooter(1000);
   
   // COLLECT DISCS
-  //odom::turnToPoint(25, 89, 550, 2);
-  //wait(5, msec);
+  odom::turnToPoint(25, 87.5, 550, 2);
+  wait(5, msec);
   moveToConveyer(10000, 0, 25, 88, 1, 2, 1, 200, 600, 5);
-  moveToConveyer(10000, 300, 53, 93, 1, 1.8, 2, 150, 600, 5);
+  moveToConveyer(10000, 300, 53, 93, 1, 2.2, 2, 150, 600, 5);
   wait(5, msec);
 
   // SHOOT DISCS
-  moveToConveyer(10000, 50, 15, 93, -1, 1.2, 2, 475, 600, 5);
+  moveToConveyer(10000, 50, 19, 88, -1, 1, 1, 350, 600, 5);
   wait(5, msec);
-  odom::turnToPoint(23, 128, 600, 2);
+  odom::turnToPoint(30, 128, 550, 2);
   wait(5, msec);
   moveShooter(1000);
 
   // COLLECT DISCS
-  startShooter(95);
-  odom::moveTo(26, 48, -1, 2.52, 1.5, 550, 600, 5);
+  startShooter(65);
+  odom::turnTo(90, 600);
+  odom::moveTo(26, 48, -1, 2.9, 1.5, 550, 600, 5);
   wait(5, msec);
   odom::turnToPoint(70, 90, 550, 2);
   wait(5, msec);
@@ -479,19 +480,21 @@ void autonomous(void) {
   wait(5, msec);
   
   // SHOOT DISCS
-  odom::turnToPoint(23, 128, 550, 2);
+  odom::turnToPoint(32, 132, 550, 2);
+  indexer.set(true);
   moveShooter(250);
-  wait(50, msec);
+  wait(75, msec);
   moveShooter(250);
-  wait(50, msec);
+  wait(75, msec);
   moveShooter(250);
-  wait(50, msec);
+  wait(75, msec);
+  indexer.set(false);
 
   // COLLECT 3 DISCS
-  startShooter(85);
-  odom::turnToPoint(115, 140, 550, 2);
+  startShooter(60);
+  odom::turnToPoint(115, 136, 550, 2);
   wait(5, msec);
-  moveToConveyer(10000, 250, 115, 140, 1, 1, 2, 300, 600, 5);
+  moveToConveyer(10000, 250, 115, 136, 1, 1, 2, 300, 600, 5);
   wait(5, msec);
 
   // ROLLER 3 
@@ -504,30 +507,37 @@ void autonomous(void) {
   // roller sub (REMOVE)
 
   // SHOOT 3 DISCS
-  moveToConveyer(10000, 0, 60.25, 136, 1, 2.2, 2, 500, 600, 5);
+  moveToConveyer(10000, 0, 64, 136, 1, 2.2, 2, 500, 600, 5);
   wait(5, msec);
-  odom::turnToPoint(25, 128, 600, 2);
+  odom::turnToPoint(29, 130, 550, 2);
   //wait(5, msec);
   moveShooter(1000);
 
   // COLLECT 3 DISCS
-  odom::turnToPoint(60.5, 118, 550, 2);
+  odom::turnToPoint(64, 118, 500, 2);
   wait(5, msec);
-  moveToConveyer(10000, 0, 60, 118, 1, 1, 2, 200, 600, 5);
-  moveToConveyer(10000, 250, 60, 95, 1, 1, 2, 150, 600, 5);
+  moveToConveyer(10000, 0, 62.5, 118, 1, 1, 2, 200, 600, 5);
+  moveToConveyer(10000, 250, 62.5, 83, 1, 1, 2, 150, 600, 5);
   wait(5, msec);
 
   // SHOOT DISCS
   //moveToConveyer(10000, 250, 48, 96, -1, 1, 2, 550, 600, 5);
   //wait(5, msec);
-  odom::turnToPoint(22, 128, 600, 2);
-  moveShooter(1000);
+  odom::turnToPoint(29, 128, 550, 2);
+  indexer.set(true);
+  moveShooter(250);
+  wait(50, msec);
+  moveShooter(250);
+  wait(50, msec);
+  moveShooter(250);
+  wait(50, msec);
+  indexer.set(false);
   
   // COLLECT 3 DISCS
-  odom::turnToPoint(99, 107, 550, 2);
+  odom::turnToPoint(99, 117, 550, 2);
   wait(5, msec);
-  moveToConveyer(100000, 0, 99, 118, 1, 1.5, 2, 550, 600, 5);
-  moveToConveyer(100000, 250, 125, 118, 1, 1.5, 2, 200, 600, 5);
+  moveToConveyer(100000, 0, 99, 117, 1, 1.5, 2, 550, 600, 5);
+  moveToConveyer(100000, 250, 125, 117, 1, 1.5, 2, 200, 600, 5);
 
   // ROLLER 4
 
