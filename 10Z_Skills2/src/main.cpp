@@ -27,35 +27,7 @@
 // indexer              digital_out   B               
 // compression          digital_out   A               
 // ---- END VEXCODE CONFIGURED DEVICES ----
-// ---- START VEXCODE CONFIGURED DEVICES ----
-// Robot Configuration:
-// [Name]               [Type]        [Port(s)]
-// frontRight           motor         16              
-// frontLeft            motor         15              
-// backRight            motor         19              
-// backLeft             motor         12              
-// Gyro                 inertial      11              
-// dr4b                 motor         3               
-// Controller1          controller                    
-// LE                   encoder       E, F            
-// convey               motor         7               
-// fourBar2             motor         1               
-// twoBar               motor         10              
-// tilter               motor         4               
-// DistanceBack         distance      2               
-// RotationTilter       rotation      20              
-// DistanceFront        distance      21              
-// vision_sensor        vision        13              
-// middleLeft           motor         5               
-// middleRight          motor         6               
-// flywheel             motor         17              
-// DigitalOutH          digital_out   C               
-// Optical              optical       9               
-// Distance             distance      8               
-// LineTrackerG         line          G               
-// indexer              digital_out   B               
-// compression          digital_out   A               
-// ---- END VEXCODE CONFIGURED DEVICES ----
+
 #include "vex.h"
 #include "odom.h"
 #include "driver.h"
@@ -121,75 +93,6 @@ void pre_auton(void) {
 
 ///////////////////////////////////////////////////AUTON FUNCTIONS
 
-void pickUpMogoD(bool tBar, bool fBar,  double d, double pos, double cap, int t1, int t2) {
-  /*
-  KEY: 
-  ======> sys = true ---> fourBar
-  ======> sys = false ---> twoBar
-  */
-  double dist = 0;
-  if(DistanceFront.isObjectDetected()) {
-    dist = DistanceFront.objectDistance(inches) + 3;
-  } else {
-    dist = d;
-  }
-    frontLeft.setTimeout(t1, sec);
-    frontRight.setTimeout(t1, sec);
-    backLeft.setTimeout(t1, sec);
-    backRight.setTimeout(t1, sec);
-    if (tBar) {
-      twoBar.setTimeout(t2, sec);
-      twoBar.startRotateFor(fwd, pos, degrees);
-    } else if (fBar) {
-      dr4b.setTimeout(t2, sec);
-      twoBar.startRotateFor(fwd, pos, degrees);
-    }
-    odom::moveForwardPID(dist, cap);
-    if (tBar) {
-      twoBar.stop();
-    } else if (fBar) {
-      dr4b.stop();
-    }
-  
-  
-}
-
-void pickUpMogoT(bool tBar, bool fBar, double d, double pos, double cap, int t1, int t2) {
-  /*
-  KEY: 
-  ======> sys = true ---> fourBar
-  ======> sys = false ---> twoBar
-  */
-  double dist = 0;
-  if(DistanceBack.isObjectDetected()) {
-    dist = -DistanceBack.objectDistance(inches);
-    Brain.Screen.print("**********************TRUE");
-    Brain.Screen.newLine();
-  } else {
-    dist = -d;
-    Brain.Screen.print("*********************FALSE");
-    Brain.Screen.newLine();
-  }
-    frontLeft.setTimeout(t1, sec);
-    frontRight.setTimeout(t1, sec);
-    backLeft.setTimeout(t1, sec);
-    backRight.setTimeout(t1, sec);
-    if (tBar) {
-      twoBar.setTimeout(t2, sec);
-      twoBar.startRotateFor(fwd, d, degrees);
-    } else if (fBar) {
-      dr4b.setTimeout(t2, sec);
-      twoBar.startRotateFor(fwd, d, degrees);
-    }
-    odom::moveForwardPID(dist, cap);
-    if (tBar) {
-      twoBar.stop();
-    } else if (fBar) {
-      dr4b.stop();
-    }
-  
-}
-
 void moveForwardConveyer(double d, double c, double t, double cap) {
   frontLeft.setTimeout(t, sec);
   frontRight.setTimeout(t, sec);
@@ -202,7 +105,6 @@ void moveForwardConveyer(double d, double c, double t, double cap) {
 }
 
 void moveToConveyer(double c, double waittime, double target_x, double target_y, double dir, double turnScale, double tolD, double capD, double capA, double settleTime) {
-  //compression.set(false);
   convey.setStopping(coast);
   convey.setVelocity(200, rpm);
   convey.startRotateFor(fwd, c, deg);
@@ -232,7 +134,6 @@ void align(int c) {
     }
 
     if(vision_sensor.largestObject.centerX > centerFOV + offsetX){
-      // eventually change to turnTo PID movement
       frontRight.spin(vex::forward, -20, vex::rpm);
       frontLeft.spin(vex::forward, 20, vex::rpm);
       middleRight.spin(vex::forward, -20, vex::rpm);
@@ -240,7 +141,6 @@ void align(int c) {
       backRight.spin(vex::forward, -20, vex::rpm);
       backLeft.spin(vex::forward, 20, vex::rpm);
     } else if(vision_sensor.largestObject.centerX < centerFOV - offsetX){
-      // eventually change to turnTo PID movement
       frontRight.spin(vex::forward, 20, vex::rpm);
       frontLeft.spin(vex::forward, -20, vex::rpm);
       middleRight.spin(vex::forward, 20, vex::rpm);
@@ -263,72 +163,12 @@ void moveSpinner(double deg) {
 }
 
 // CHANGED SHOOTER CODE
-void moveShooter(double deg) {
-  
+void moveShooter(double deg) { 
   convey.setVelocity(95, percent);
   convey.rotateFor(vex::reverse, deg, degrees);
-  //convey.stop();
-  //convey.setPosition(0, degrees);
-  /*
-  double error = deg - convey.position(degrees); 
-  while (error > 2) {
-    error = deg - convey.position(degrees);
-    convey.spin(vex::reverse, error, rpm);
-  }*/
-  //convey.rotateFor(vex::reverse, deg, degrees);
-}
-
 void startShooter(double vel) {
   flywheel.spin(vex::fwd, vel, percent);
-  //flywheel.spin(vex::fwd, vel, percent);
 }
-
-/*
-void rotateSpinnerOptical(double col, double t) {
-  // if col = 1 --> color is blue
-  // if col = 0 --> color is red
-  // t sets the timeout
-  convey.setPosition(0, degrees);
-  frontLeft.setStopping(hold);
-  frontRight.setStopping(hold);
-  middleLeft.setStopping(hold);
-  middleRight.setStopping(hold);
-  backLeft.setStopping(hold);
-  backRight.setStopping(hold);
-  convey.setTimeout(t, seconds);
-  //Optical.setLightPower(75, percent);
-  bool spinning = true; 
-  if (col == 0) {
-    while (Optical.color() != red && spinning) {
-      convey.spin(vex::forward, 20, percent);
-      spinning = convey.isSpinning();
-      wait(1, msec);
-      if (convey.position(degrees) > 1000) {
-        break;
-      }
-    }
-    convey.stop(); 
-  } else if (col == 1) {
-    while (Optical.color() != blue && spinning) {
-      convey.spin(vex::forward, 20, percent);
-      spinning = convey.isSpinning();
-      wait(1, msec);
-      if (convey.position(degrees) > 1000) {
-        break;
-      }
-    }
-    
-    convey.stop();
-  }
-
-  frontLeft.setStopping(coast);
-  frontRight.setStopping(coast);
-  middleLeft.setStopping(coast);
-  middleRight.setStopping(coast);
-  backLeft.setStopping(coast);
-  backRight.setStopping(coast);
-}*/
-
 
 int getColor(){
   Optical.setLightPower(100,pct);
@@ -391,8 +231,6 @@ void expand() {
   DigitalOutH.set(true);
 }
 
-
-
 void autonomous(void) {
 
   // ..........................................................................
@@ -420,9 +258,6 @@ void autonomous(void) {
   //odom::turnToPoint(double target_x, double target_y, double cap, double settleTime);
   //rollerSpin(bool color, double speed, double timeout, double extraspin)
   
-  //odom::turnTo(180,600);
-  //moveToConveyer(10000, 48, 87, 1, 2.52, 2, 550, 600, 5); //2.4;//2.245
-  
   // ROLLER 1
   startShooter(70);
   odom::moveTo(36, 8.5, -1, 0.1, 2.52, 600, 600, 5);
@@ -443,7 +278,6 @@ void autonomous(void) {
   odom::turnTo(180, 550);
   wait(5, msec);
   odom::moveTo(11, 27, -1, 0.1, 1, 550, 600, 2);
-  //wait(5, msec);
   // roller sub (REMOVE)
   wait(500, msec);
   // roller sub (REMOVE)
@@ -510,7 +344,6 @@ void autonomous(void) {
   moveToConveyer(10000, 0, 64, 136, 1, 2.2, 2, 500, 600, 5);
   wait(5, msec);
   odom::turnToPoint(29, 130, 550, 2);
-  //wait(5, msec);
   moveShooter(1000);
 
   // COLLECT 3 DISCS
@@ -521,8 +354,6 @@ void autonomous(void) {
   wait(5, msec);
 
   // SHOOT DISCS
-  //moveToConveyer(10000, 250, 48, 96, -1, 1, 2, 550, 600, 5);
-  //wait(5, msec);
   odom::turnToPoint(29, 128, 550, 2);
   indexer.set(true);
   moveShooter(250);
@@ -538,66 +369,11 @@ void autonomous(void) {
   wait(5, msec);
   moveToConveyer(100000, 0, 99, 117, 1, 1.5, 2, 550, 600, 5);
   moveToConveyer(100000, 250, 125, 117, 1, 1.5, 2, 200, 600, 5);
-
-  // ROLLER 4
-
-
-
-
-  
-
-
-
-
-
-  
-
-
-
-  
-
-
-  // MATCHLOADING (300+ AUTON)
-  //MATCHLOAD + 9 DISCS
-  /*
-  startShooter(12);
-  wait(2, sec);
-  odom::turnToPoint(123, 14, 600, 4);
-  moveShooter(250);
-  wait(50, msec);
-  moveShooter(250);
-  wait(50, msec);
-  moveShooter(250);
-  wait(50, msec);
-
-  // ROLLER 1
-  odom::moveTo(42, 15, -1, 3.5, 2, 600, 600, 5);
-  odom::turnTo(90, 600);
-  odom::moveTo(42, 5, -1, 2, 2, 600, 600, 5);
-  wait(5, msec);
-
-  // COLLECT 3 DISCS
-  moveToConveyer(10000,84, 60, 1, 2.5, 2, 400, 600, 5);
-  convey.setVelocity(100, percent);
-  convey.rotateFor(2000, degrees);
-  
-  // SHOOT 3 DISCS
-  odom::turnToPoint(123, 14, 600, 4);
-  moveShooter(250);
-  wait(50, msec);
-  moveShooter(250);
-  wait(50, msec);
-  moveShooter(250);
-  wait(50, msec);*/
   
 
   while (1){
     //Insert move to functions and other functions over here
-    
-    //odom::moveForwardPID(24, 80);
     this_thread::sleep_for(10); //Wait for 10 Seconds, Updates x,y Every 10 Seconds
-    //odom::turnTo(90);
-  
   }
 
 
@@ -618,31 +394,7 @@ void autonomous(void) {
 /*---------------------------------------------------------------------------*/
 
 
-  
-
-
-/*
-int Xpressed = 0;
-
-bool alatch = false;
-void flagA() {
-  alatch = true;
-}
-
-int Upressed = 0;
-bool ahold = false;
-
-void flagB() {
-  ahold = true;
-}*/
-
-
 void usercontrol(void) {
-//Replace Cap and Floor Values with Actual Measured Values {Placer Holders Kept for Now}
-  //pOdom = new odom();
-  //vex::thread positionTrackingThread(odom::positionTracking); // Define thread for Position Tracking Method
-  // User control code here, inside the loop
-
   frontRight.setPosition(0, degrees);
   frontLeft.setPosition(0, degrees);
   middleRight.setPosition(0, degrees);
@@ -652,10 +404,7 @@ void usercontrol(void) {
   
   driver::robotDrive();
   
-
-  
-
-    //wait(20, msec); // Sleep the task for a short amount of time to
+  //wait(20, msec); // Sleep the task for a short amount of time to
                     // prevent wasted resources.
   
 }
